@@ -2,24 +2,36 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Mensaje Especial</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Alberto Lem – 2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <style>
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto;
-      min-height:100vh;
-      overflow:hidden;
-      color:#fff;
-      background:#041c2d;
+    :root{
+      --glass: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.22);
+      --shadow: 0 22px 70px rgba(0,0,0,.45);
+      --fb: #1877f2;
     }
 
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto;
+      min-height:100vh;
+      color:#fff;
+      background:#041c2d;
+      overflow:hidden;
+    }
+
+    /* Fondo animado */
     .bg{
-      position:fixed; inset:-40px;
+      position:fixed;
+      inset:-40px;
       background:
         radial-gradient(700px 380px at 15% 18%, rgba(44,198,255,.30), transparent 70%),
         radial-gradient(650px 420px at 85% 22%, rgba(255,108,201,.22), transparent 70%),
+        radial-gradient(900px 520px at 50% 90%, rgba(255,225,120,.18), transparent 70%),
         linear-gradient(180deg, #0b4f7a 0%, #041c2d 70%);
       animation:bgMove 10s ease-in-out infinite alternate;
     }
@@ -29,60 +41,89 @@
 
     .wrap{
       position:relative;
+      z-index:1;
       min-height:100vh;
       display:grid;
       place-items:center;
       padding:20px;
-      z-index:2;
     }
 
     .card{
-      width:min(680px, 94vw);
+      width:min(760px, 94vw);
+      padding:38px 30px;
       border-radius:22px;
-      padding:36px 28px;
-      background:rgba(255,255,255,.12);
-      border:1px solid rgba(255,255,255,.18);
-      backdrop-filter: blur(12px);
-      box-shadow:0 20px 70px rgba(0,0,0,.45);
+      background:var(--glass);
+      border:1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      box-shadow:var(--shadow);
       text-align:center;
       animation: enter .6s ease forwards;
     }
     @keyframes enter{
-      from{opacity:0;transform:translateY(10px)}
-      to{opacity:1;transform:translateY(0)}
+      from{ opacity:0; transform:translateY(10px); }
+      to{ opacity:1; transform:translateY(0); }
     }
 
-    .emoji{
-      font-size:64px;
-      animation:bounce 2s ease-in-out infinite;
+    /* Avatar */
+    .avatar-link{
+      display:inline-block;
+      text-decoration:none;
     }
-    @keyframes bounce{
-      50%{transform:translateY(-10px)}
+    .avatar{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid rgba(255,255,255,.6);
+      box-shadow:0 18px 40px rgba(0,0,0,.45);
+      transition:transform .18s ease, opacity .18s ease;
+    }
+    .avatar:hover{
+      transform:translateY(-2px) scale(1.02);
+      opacity:.96;
+    }
+
+    .name{
+      margin:16px 0 2px;
+      font-size:22px;
+      font-weight:800;
+      letter-spacing:.3px;
+    }
+
+    .year{
+      font-size:14px;
+      letter-spacing:2px;
+      opacity:.75;
+      margin-bottom:14px;
     }
 
     h1{
-      margin:14px 0 8px;
-      font-size:clamp(26px,4.5vw,40px);
+      margin:14px 0 10px;
+      font-size:clamp(26px,4.6vw,42px);
+      letter-spacing:.3px;
     }
 
     p{
-      margin:0 auto 18px;
-      max-width:56ch;
-      opacity:.92;
-      line-height:1.55;
+      margin:0 auto 20px;
+      max-width:60ch;
+      font-size:clamp(14.5px,2.4vw,17.5px);
+      line-height:1.6;
+      opacity:.94;
     }
 
     .quote{
-      font-weight:600;
-      margin:18px 0;
+      margin-top:16px;
+      font-weight:650;
       font-size:clamp(15px,2.6vw,18px);
+      opacity:.98;
+      min-height:2.2em;
     }
 
     .actions{
-      margin-top:22px;
+      margin-top:26px;
       display:flex;
       justify-content:center;
-      gap:12px;
+      gap:14px;
       flex-wrap:wrap;
     }
 
@@ -92,11 +133,13 @@
       gap:10px;
       padding:12px 18px;
       border-radius:14px;
-      font-weight:800;
+      font-weight:900;
       text-decoration:none;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.22);
       transition:transform .15s ease, opacity .15s ease;
-      border:1px solid rgba(255,255,255,.25);
     }
+    .btn:active{ transform:scale(.98); }
 
     .btn-primary{
       background:#fff;
@@ -104,19 +147,19 @@
     }
 
     .btn-facebook{
-      background:rgba(24,119,242,.85);
+      background:var(--fb);
       color:#fff;
     }
 
     .btn:hover{
       transform:translateY(-2px);
-      opacity:.95;
+      opacity:.96;
     }
 
     .footer{
-      margin-top:18px;
+      margin-top:22px;
       font-size:13px;
-      opacity:.85;
+      opacity:.82;
     }
   </style>
 </head>
@@ -126,13 +169,25 @@
 
   <main class="wrap">
     <section class="card">
-      <div class="emoji">🎊</div>
+      <!-- Foto de perfil -->
+      <a class="avatar-link"
+         href="https://www.facebook.com/share/16Lna6EscP/?mibextid=wwXIfr"
+         target="_blank"
+         rel="noopener"
+         aria-label="Perfil de Facebook de Alberto Lem">
+        <img class="avatar" src="perfil.jpg" alt="Foto de perfil de Alberto Lem">
+      </a>
 
-      <h1>¡Mensaje Especial!</h1>
+      <div class="name">Alberto Lem</div>
+      <div class="year">2026</div>
+
+      <h1>✨ Alberto Lem le desea</h1>
+
       <p>
-        Gracias por tomarse un momento para leer este mensaje.
-        Que estos días estén llenos de energía positiva,
-        motivación y nuevas oportunidades.
+        Que este nuevo ciclo esté lleno de salud, motivación,
+        claridad y nuevas oportunidades. Reciba este mensaje
+        con aprecio y compártalo con quien considere que pueda
+        necesitar un mensaje positivo en este año 2026.
       </p>
 
       <div class="quote" id="quote">
@@ -140,20 +195,20 @@
       </div>
 
       <div class="actions">
-        <a class="btn btn-primary" href="#" onclick="nextQuote()">
+        <button class="btn btn-primary" type="button" onclick="nextQuote()">
           ✨ Cambiar mensaje
-        </a>
+        </button>
 
         <a class="btn btn-facebook"
            href="https://www.facebook.com/share/16Lna6EscP/?mibextid=wwXIfr"
            target="_blank"
            rel="noopener">
-          📘 Visitar mi Facebook
+          📘 Ver perfil en Facebook
         </a>
       </div>
 
       <div class="footer">
-        Compártalo libremente en sus redes sociales.
+        Mensaje personal compartido públicamente · Año 2026
       </div>
     </section>
   </main>
@@ -161,10 +216,11 @@
   <script>
     const QUOTES = [
       '“Hoy es un buen día para avanzar con determinación.”',
-      '“Cada paso firme construye un mejor mañana.”',
-      '“La constancia siempre supera a la suerte.”',
-      '“Nunca es tarde para empezar algo valioso.”',
-      '“La disciplina abre puertas que el talento solo no puede.”'
+      '“La constancia construye resultados duraderos.”',
+      '“Cada paso firme acerca a un mejor mañana.”',
+      '“La disciplina convierte los objetivos en logros.”',
+      '“Que 2026 sea un año de crecimiento y claridad.”',
+      '“Nunca es tarde para empezar algo valioso.”'
     ];
 
     let index = 0;
