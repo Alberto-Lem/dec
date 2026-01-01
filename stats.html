@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Estadísticas · Alberto Lem</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root{
+      --bg1:#041c2d; --bg2:#0b4f7a;
+      --glass: rgba(255,255,255,.12);
+      --stroke: rgba(255,255,255,.22);
+      --shadow: 0 22px 70px rgba(0,0,0,.45);
+      --txt: rgba(255,255,255,.96);
+      --sub: rgba(255,255,255,.86);
+      --muted: rgba(255,255,255,.72);
+      --glowA: rgba(44,198,255,.40);
+      --glowB: rgba(255,108,201,.26);
+      --glowC: rgba(255,225,120,.18);
+      --radius: 28px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color:var(--txt);
+      background:var(--bg1);
+      overflow:hidden;
+    }
+
+    .bg{
+      position:fixed; inset:-60px;
+      background:
+        radial-gradient(900px 520px at 15% 18%, var(--glowA), transparent 70%),
+        radial-gradient(820px 540px at 85% 20%, var(--glowB), transparent 70%),
+        radial-gradient(1100px 680px at 50% 92%, var(--glowC), transparent 70%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 70%);
+      animation:bgMove 10s ease-in-out infinite alternate;
+      filter:saturate(115%);
+    }
+    @keyframes bgMove{ to{ transform:translate(-14px,8px) scale(1.02); } }
+
+    .wrap{
+      position:relative; z-index:1;
+      min-height:100vh;
+      display:grid; place-items:center;
+      padding:22px;
+      overflow:auto;
+    }
+
+    .card{
+      width:min(1080px, 96vw);
+      padding:34px 28px;
+      border-radius:var(--radius);
+      background:var(--glass);
+      border:1px solid var(--stroke);
+      backdrop-filter: blur(14px);
+      box-shadow:var(--shadow);
+    }
+
+    h1{ margin:0 0 14px; font-weight:950; }
+    p{ margin:0 0 16px; color:var(--sub); line-height:1.6; }
+
+    .row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .input{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      color: var(--txt);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+      font-weight:750;
+      font-size:13px;
+    }
+    .input::-webkit-calendar-picker-indicator{ filter: invert(1); opacity:.85; }
+
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:11px 14px;
+      border-radius:14px;
+      font-weight:950;
+      text-decoration:none;
+      cursor:pointer;
+      border:1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.18);
+      color:var(--txt);
+      transition:transform .15s ease, opacity .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover{ transform:translateY(-2px); opacity:.97; box-shadow:0 16px 34px rgba(0,0,0,.28); }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);
+      font-size:13px;
+      user-select:none;
+    }
+
+    .chart{
+      height:180px;
+      display:flex;
+      align-items:flex-end;
+      gap:6px;
+      padding:12px;
+      border-radius:18px;
+      background: rgba(0,0,0,.12);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+      margin-top:10px;
+    }
+
+    .bar{
+      flex:1;
+      min-width: 6px;
+      border-radius: 12px 12px 8px 8px;
+      background: linear-gradient(180deg, rgba(44,198,255,.90), rgba(255,108,201,.55));
+      opacity:.92;
+    }
+
+    .legend{
+      margin-top:10px;
+      font-size:13px;
+      color: var(--muted);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .grid2{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+    }
+
+    @media (min-width: 900px){
+      .grid2{ grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="row">
+        <div>
+          <h1>📊 Estadísticas</h1>
+          <p>Vistas por día, por hora y por mes, consultadas desde su API.</p>
+        </div>
+        <div class="controls">
+          <a class="btn" href="./index.html">← Volver</a>
+          <span class="badge">Página: <b>&nbsp;visits</b></span>
+          <span class="badge">Total: <b id="totalAll">&nbsp;—</b></span>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <div class="row">
+            <span class="badge">📅 Por día (rango)</span>
+            <div class="controls">
+              <input class="input" type="date" id="fromDate" />
+              <input class="input" type="date" id="toDate" />
+              <button class="btn" id="btnDaily" type="button">Cargar</button>
+            </div>
+          </div>
+          <div class="chart" id="chartDaily"></div>
+          <div class="legend">
+            <div id="dailyLeft">—</div>
+            <div id="dailyRight">—</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="row">
+            <span class="badge">🕒 Por hora (día)</span>
+            <div class="controls">
+              <input class="input" type="date" id="hourlyDate" />
+              <button class="btn" id="btnHourly" type="button">Cargar</button>
+            </div>
+          </div>
+          <div class="chart" id="chartHourly"></div>
+          <div class="legend">
+            <div id="hourlyLeft">—</div>
+            <div id="hourlyRight">—</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="row">
+            <span class="badge">🗓️ Por mes (año)</span>
+            <div class="controls">
+              <input class="input" type="number" min="2020" max="2100" id="yearInput" />
+              <button class="btn" id="btnMonthly" type="button">Cargar</button>
+            </div>
+          </div>
+          <div class="chart" id="chartMonthly"></div>
+          <div class="legend">
+            <div id="monthlyLeft">—</div>
+            <div id="monthlyRight">—</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="row">
+            <span class="badge">✅ Diagnóstico rápido</span>
+          </div>
+          <p class="badge" style="display:block;">
+            Si algo falla, revise en DevTools → Network la URL llamada y la respuesta. Si la respuesta no es JSON,
+            el frontend mostrará “—” o quedará vacío. CORS y rutas son las causas más comunes.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const API_BASE = "https://api.systemblacklem.com";
+    const PAGE_KEY = "visits";
+
+    const ENDPOINTS = {
+      track:  `${API_BASE}/api/public/visits/track?page=${encodeURIComponent(PAGE_KEY)}`,
+      daily:  (from, to) => `${API_BASE}/api/public/visits/stats/daily?page=${encodeURIComponent(PAGE_KEY)}&from=${from}&to=${to}`,
+      hourly: (date)    => `${API_BASE}/api/public/visits/stats/hourly?page=${encodeURIComponent(PAGE_KEY)}&date=${date}`,
+      monthly:(year)    => `${API_BASE}/api/public/visits/stats/monthly?page=${encodeURIComponent(PAGE_KEY)}&year=${year}`,
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    async function fetchJson(url){
+      const res = await fetch(url, { method:"GET" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.json();
+    }
+
+    function setDefaults(){
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth()+1).padStart(2,"0");
+      const dd = String(now.getDate()).padStart(2,"0");
+      const today = `${yyyy}-${mm}-${dd}`;
+
+      $("hourlyDate").value = today;
+      $("yearInput").value = String(yyyy);
+
+      const from = new Date(now.getTime() - 13*24*60*60*1000);
+      const fyyyy = from.getFullYear();
+      const fmm = String(from.getMonth()+1).padStart(2,"0");
+      const fdd = String(from.getDate()).padStart(2,"0");
+
+      $("fromDate").value = `${fyyyy}-${fmm}-${fdd}`;
+      $("toDate").value = today;
+    }
+
+    function renderBars(containerId, points, leftId, rightId, leftText){
+      const container = $(containerId);
+      container.innerHTML = "";
+
+      if (!points || points.length === 0){
+        $(leftId).textContent = leftText;
+        $(rightId).textContent = "Sin datos";
+        return;
+      }
+
+      const max = Math.max(...points.map(p => Number(p.value||0)), 1);
+      for (const p of points){
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        const val = Number(p.value||0);
+        const h = Math.max(6, Math.round((val/max)*160));
+        bar.style.height = `${h}px`;
+        bar.title = `${p.key}: ${val}`;
+        container.appendChild(bar);
+      }
+
+      const sum = points.reduce((a,p)=>a+Number(p.value||0),0);
+      $(leftId).textContent = leftText;
+      $(rightId).textContent = `Total: ${sum}`;
+    }
+
+    async function loadTotal(){
+      try{
+        const data = await fetchJson(ENDPOINTS.track);
+        $("totalAll").textContent = String(data.total ?? "—");
+      }catch{
+        $("totalAll").textContent = "—";
+      }
+    }
+
+    async function loadDaily(){
+      const from = $("fromDate").value;
+      const to = $("toDate").value;
+      const data = await fetchJson(ENDPOINTS.daily(from,to));
+      renderBars("chartDaily", data, "dailyLeft", "dailyRight", `Por día (${from} a ${to})`);
+    }
+
+    async function loadHourly(){
+      const date = $("hourlyDate").value;
+      const data = await fetchJson(ENDPOINTS.hourly(date));
+      renderBars("chartHourly", data, "hourlyLeft", "hourlyRight", `Por hora (${date} UTC)`);
+    }
+
+    async function loadMonthly(){
+      const year = Number($("yearInput").value);
+      const data = await fetchJson(ENDPOINTS.monthly(year));
+      renderBars("chartMonthly", data, "monthlyLeft", "monthlyRight", `Por mes (${year})`);
+    }
+
+    $("btnDaily").addEventListener("click", () => loadDaily().catch(()=>renderBars("chartDaily",[], "dailyLeft","dailyRight","Error")));
+    $("btnHourly").addEventListener("click", () => loadHourly().catch(()=>renderBars("chartHourly",[], "hourlyLeft","hourlyRight","Error")));
+    $("btnMonthly").addEventListener("click", () => loadMonthly().catch(()=>renderBars("chartMonthly",[], "monthlyLeft","monthlyRight","Error")));
+
+    setDefaults();
+    loadTotal();
+    loadDaily().catch(()=>{});
+    loadHourly().catch(()=>{});
+    loadMonthly().catch(()=>{});
+  </script>
+</body>
+</html>
