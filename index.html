@@ -14,20 +14,24 @@
       --stroke: rgba(255,255,255,.22);
       --shadow: 0 22px 70px rgba(0,0,0,.45);
 
-      --linkedin:#0A66C2;
-
       --txt: rgba(255,255,255,.96);
       --sub: rgba(255,255,255,.86);
       --muted: rgba(255,255,255,.72);
 
-      --glowA: rgba(44,198,255,.38);
+      --glowA: rgba(44,198,255,.42);
       --glowB: rgba(255,108,201,.28);
-      --glowC: rgba(255,225,120,.20);
+      --glowC: rgba(255,225,120,.22);
+
+      --linkedin:#0A66C2;
+      --ok: rgba(80, 255, 180, .85);
+      --warn: rgba(255, 220, 120, .9);
+
+      --radius: 28px;
     }
 
     *{ box-sizing:border-box; }
-
     html,body{ height:100%; }
+
     body{
       margin:0;
       font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
@@ -36,24 +40,23 @@
       overflow:hidden;
     }
 
-    /* ===================== Fondo: luces + movimiento ===================== */
+    /* ================= Fondo: aurora + luces ================= */
     .bg{
-      position:fixed; inset:-60px;
+      position:fixed; inset:-70px;
       background:
         radial-gradient(900px 520px at 15% 18%, var(--glowA), transparent 70%),
         radial-gradient(820px 540px at 85% 20%, var(--glowB), transparent 70%),
-        radial-gradient(1100px 640px at 50% 92%, var(--glowC), transparent 70%),
+        radial-gradient(1100px 680px at 50% 92%, var(--glowC), transparent 70%),
         linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 70%);
       animation:bgMove 10s ease-in-out infinite alternate;
-      filter:saturate(115%);
+      filter:saturate(118%);
     }
     @keyframes bgMove{
       to{ transform:translate(-18px,10px) scale(1.04); }
     }
 
-    /* Capa de “aurora” suave */
     .aurora{
-      position:fixed; inset:-80px;
+      position:fixed; inset:-90px;
       background:
         conic-gradient(from 180deg at 50% 50%,
           rgba(44,198,255,.12),
@@ -62,16 +65,14 @@
           rgba(44,198,255,.12)
         );
       mix-blend-mode: screen;
-      opacity:.65;
+      opacity:.7;
       filter: blur(26px);
       animation: auroraSpin 14s linear infinite;
       pointer-events:none;
     }
-    @keyframes auroraSpin{
-      to{ transform:rotate(360deg); }
-    }
+    @keyframes auroraSpin{ to{ transform:rotate(360deg); } }
 
-    /* ===================== Estrellas / partículas ===================== */
+    /* ================= Estrellas ================= */
     .stars{
       position:fixed; inset:0;
       pointer-events:none;
@@ -85,14 +86,24 @@
       background:rgba(255,255,255,.85);
       box-shadow: 0 0 12px rgba(255,255,255,.65);
       animation: twinkle var(--tw, 3.5s) ease-in-out infinite alternate;
-      transform: translate3d(0,0,0);
     }
     @keyframes twinkle{
       from{ opacity:.25; transform:scale(.9); }
       to{ opacity:1; transform:scale(1.35); }
     }
 
-    /* ===================== Layout ===================== */
+    /* ================= Canvas: pirotecnia ================= */
+    #fxCanvas{
+      position:fixed;
+      inset:0;
+      width:100vw;
+      height:100vh;
+      z-index:0;
+      pointer-events:none;
+      opacity:.95;
+    }
+
+    /* ================= Layout ================= */
     .wrap{
       position:relative;
       z-index:1;
@@ -103,9 +114,9 @@
     }
 
     .card{
-      width:min(900px, 95vw);
+      width:min(940px, 95vw);
       padding:44px 36px;
-      border-radius:28px;
+      border-radius:var(--radius);
       background:var(--glass);
       border:1px solid var(--stroke);
       backdrop-filter: blur(14px);
@@ -114,40 +125,35 @@
       position:relative;
       overflow:hidden;
       animation: enter .7s cubic-bezier(.2,.8,.2,1) forwards;
+      transform: translateZ(0);
     }
     @keyframes enter{
       from{opacity:0; transform:translateY(14px) scale(.985)}
       to{opacity:1; transform:translateY(0) scale(1)}
     }
 
-    /* Borde luminoso animado */
+    /* Borde luminoso animado (más suave) */
     .card::before{
       content:"";
       position:absolute; inset:-2px;
-      border-radius:30px;
+      border-radius: calc(var(--radius) + 2px);
       background: conic-gradient(
         from 180deg,
         rgba(44,198,255,.0),
         rgba(44,198,255,.35),
-        rgba(255,108,201,.30),
-        rgba(255,225,120,.22),
+        rgba(255,108,201,.28),
+        rgba(255,225,120,.18),
         rgba(44,198,255,.35),
         rgba(44,198,255,.0)
       );
-      filter: blur(8px);
-      opacity:.8;
-      animation: borderSpin 6s linear infinite;
+      filter: blur(10px);
+      opacity:.78;
+      animation: borderSpin 6.5s linear infinite;
       z-index:0;
     }
     @keyframes borderSpin{ to{ transform:rotate(360deg); } }
 
-    /* Separador interno para que el brillo quede “detrás” */
-    .card > *{
-      position:relative;
-      z-index:1;
-    }
-
-    /* Destello suave que pasa por la tarjeta */
+    /* Destello de vidrio */
     .sheen{
       position:absolute;
       inset:-40%;
@@ -160,22 +166,65 @@
       );
       transform: translateX(-40%) rotate(10deg);
       animation: sheenMove 7.5s ease-in-out infinite;
-      z-index:1;
       pointer-events:none;
       opacity:.55;
+      z-index:1;
     }
     @keyframes sheenMove{
-      0%   { transform: translateX(-55%) rotate(10deg); opacity:.15; }
+      0%   { transform: translateX(-55%) rotate(10deg); opacity:.12; }
       35%  { opacity:.55; }
       65%  { opacity:.55; }
-      100% { transform: translateX(55%) rotate(10deg); opacity:.15; }
+      100% { transform: translateX(55%) rotate(10deg); opacity:.12; }
+    }
+
+    .card > *{ position:relative; z-index:2; }
+
+    /* Modo celebración: luces extra */
+    .card.party{
+      box-shadow:
+        0 22px 70px rgba(0,0,0,.45),
+        0 0 34px rgba(44,198,255,.18),
+        0 0 52px rgba(255,108,201,.14),
+        0 0 78px rgba(255,225,120,.10);
+    }
+
+    .toprow{
+      display:flex;
+      justify-content:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--muted);
+      font-size:13px;
+      user-select:none;
+    }
+    .dot{
+      width:10px; height:10px;
+      border-radius:999px;
+      background: rgba(44,198,255,.95);
+      animation: pulse 1.6s ease-out infinite;
+      box-shadow: 0 0 0 rgba(44,198,255,.35);
+    }
+    @keyframes pulse{
+      0%   { box-shadow: 0 0 0 0 rgba(44,198,255,.35); }
+      70%  { box-shadow: 0 0 0 10px rgba(44,198,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(44,198,255,0); }
     }
 
     .name{
-      font-size:30px;
+      font-size:32px;
       font-weight:950;
-      letter-spacing:.4px;
-      margin-bottom:6px;
+      margin:10px 0 6px;
       text-shadow: 0 10px 26px rgba(0,0,0,.35);
     }
     .year{
@@ -185,52 +234,25 @@
       margin-bottom:18px;
     }
 
-    /* “Badge” de estado: online + pulso */
-    .badge{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      margin:0 auto 16px;
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.14);
-      color:var(--muted);
-      font-size:13px;
-    }
-    .dot{
-      width:10px; height:10px;
-      border-radius:999px;
-      background: rgba(44,198,255,.95);
-      box-shadow: 0 0 0 rgba(44,198,255,.35);
-      animation: pulse 1.6s ease-out infinite;
-    }
-    @keyframes pulse{
-      0%   { box-shadow: 0 0 0 0 rgba(44,198,255,.35); }
-      70%  { box-shadow: 0 0 0 10px rgba(44,198,255,0); }
-      100% { box-shadow: 0 0 0 0 rgba(44,198,255,0); }
-    }
-
     h1{
-      font-size:clamp(28px,5vw,48px);
+      font-size:clamp(28px,5vw,50px);
       margin:10px 0 14px;
       font-weight:950;
       line-height:1.1;
     }
 
     p{
-      max-width:70ch;
+      max-width:72ch;
       margin:0 auto 18px;
       font-size:clamp(15px,2.4vw,18px);
       line-height:1.65;
       color:var(--sub);
     }
 
-    /* Texto dinámico “typewriter” + cursor */
     .dynamic{
       margin-top:18px;
       font-size:clamp(16px,2.6vw,19px);
-      font-weight:850;
+      font-weight:900;
       min-height:2.7em;
       letter-spacing:.2px;
       text-shadow: 0 10px 26px rgba(0,0,0,.25);
@@ -263,10 +285,15 @@
       background:rgba(0,0,0,.18);
       border:1px solid rgba(255,255,255,.12);
       transition: transform .15s ease, background .15s ease;
+      user-select:none;
     }
     .pill:hover{
       transform: translateY(-1px);
       background: rgba(0,0,0,.22);
+    }
+    .pill.live{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.18);
     }
 
     .actions{
@@ -323,25 +350,48 @@
       transform: translateX(60%) rotate(12deg);
     }
 
+    /* Banner de audio (solo aparece si el navegador bloquea autoplay) */
+    .audioBanner{
+      position:fixed;
+      left:16px;
+      right:16px;
+      bottom:16px;
+      z-index:5;
+      display:none;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:18px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      color: var(--txt);
+    }
+    .audioBanner strong{ font-weight:950; }
+    .audioBanner .mini{
+      font-size:13px;
+      color: var(--sub);
+      opacity:.92;
+    }
+
     .footer{
       margin-top:22px;
       font-size:13px;
       color:var(--muted);
     }
 
-    /* Micro-animación al “presionar espacio” */
-    .shake{
-      animation: pop .22s ease;
-    }
+    .shake{ animation: pop .22s ease; }
     @keyframes pop{
       0%{ transform: scale(1); }
       60%{ transform: scale(1.012); }
       100%{ transform: scale(1); }
     }
 
-    /* Respeto a usuarios con reducción de movimiento */
     @media (prefers-reduced-motion: reduce){
       .bg,.aurora,.card::before,.sheen,.star,.dot,.cursor{ animation:none !important; }
+      #fxCanvas{ display:none; }
       .btn,.pill{ transition:none !important; }
     }
   </style>
@@ -350,17 +400,34 @@
 <body>
   <div class="bg"></div>
   <div class="aurora"></div>
-
-  <!-- Estrellas (se rellenan por JS) -->
   <div class="stars" id="stars"></div>
+
+  <canvas id="fxCanvas" aria-hidden="true"></canvas>
+
+  <!-- Música (suba assets/music.mp3 a su repo) -->
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="./assets/music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Banner para activar audio si el navegador bloquea autoplay -->
+  <div class="audioBanner" id="audioBanner">
+    <div class="mini">🔊 <strong>Audio bloqueado</strong> por el navegador. Presione para activarlo.</div>
+    <button class="btn btn-animate" id="btnEnableAudio" type="button">Activar audio</button>
+    <button class="btn btn-animate" id="btnDismissAudio" type="button">Cerrar</button>
+  </div>
 
   <main class="wrap">
     <section class="card" id="card">
       <div class="sheen"></div>
 
-      <div class="badge" title="Efectos dinámicos activos">
-        <span class="dot"></span>
-        <span id="statusText">Dinámico · activo</span>
+      <div class="toprow">
+        <div class="badge" title="Efectos dinámicos activos">
+          <span class="dot"></span>
+          <span id="statusText">Dinámico · activo</span>
+        </div>
+        <div class="badge" id="partyBadge" style="display:none;">
+          🎆 Celebración · ON
+        </div>
       </div>
 
       <div class="name">Alberto Lem</div>
@@ -381,6 +448,7 @@
       <div class="meta">
         <div class="pill" id="greetingPill">🕒 --</div>
         <div class="pill" id="datePill">📅 --</div>
+        <div class="pill live" id="viewsPill" title="Conteo local (no persistente)">👁️ Vistas: <span id="viewsCount">1</span></div>
         <div class="pill" id="hintPill">⚡ Espacio: nuevo mensaje</div>
       </div>
 
@@ -398,6 +466,14 @@
         <button class="btn btn-animate" id="btnCopy" type="button">
           📋 Copiar mensaje
         </button>
+
+        <button class="btn btn-animate" id="btnParty" type="button">
+          🎆 Modo celebración: OFF
+        </button>
+
+        <button class="btn btn-animate" id="btnMusic" type="button">
+          🔊 Música: AUTO
+        </button>
       </div>
 
       <div class="footer">
@@ -407,7 +483,7 @@
   </main>
 
   <script>
-    /* ===================== Contenido dinámico ===================== */
+    /* ===================== Mensajes dinámicos ===================== */
     const MESSAGES = {
       morning: [
         "Que su mañana inicie con enfoque, calma y determinación.",
@@ -454,14 +530,10 @@
       });
     }
 
-    function pick(arr){
-      return arr[Math.floor(Math.random() * arr.length)];
-    }
+    function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
-    /* ===================== Typewriter ===================== */
     let typingTimer = null;
-
-    function typewriter(el, text, speed = 18){
+    function typewriter(el, text, speed = 16){
       clearInterval(typingTimer);
       el.textContent = "";
       let i = 0;
@@ -488,41 +560,9 @@
       const el = $("dynamicMsg");
       if (animate) typewriter(el, msg, 16);
       else el.textContent = msg;
-
       updatePills();
     }
 
-    /* ===================== Estrellas / partículas ===================== */
-    function createStars(count = 54){
-      const root = $("stars");
-      root.innerHTML = "";
-
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-
-      for (let i = 0; i < count; i++){
-        const s = document.createElement("div");
-        s.className = "star";
-
-        const x = Math.random() * w;
-        const y = Math.random() * h;
-
-        const tw = (2.4 + Math.random() * 3.8).toFixed(2) + "s";
-        const size = (1 + Math.random() * 2.2).toFixed(2) + "px";
-        const opacity = (0.35 + Math.random() * 0.55).toFixed(2);
-
-        s.style.left = x + "px";
-        s.style.top  = y + "px";
-        s.style.width = size;
-        s.style.height = size;
-        s.style.opacity = opacity;
-        s.style.setProperty("--tw", tw);
-
-        root.appendChild(s);
-      }
-    }
-
-    /* ===================== Interacciones ===================== */
     function nudgeCard(){
       const card = $("card");
       card.classList.remove("shake");
@@ -530,9 +570,218 @@
       card.classList.add("shake");
     }
 
+    /* ===================== Estrellas ===================== */
+    function createStars(count = 54){
+      const root = $("stars");
+      root.innerHTML = "";
+      const w = window.innerWidth, h = window.innerHeight;
+
+      for (let i = 0; i < count; i++){
+        const s = document.createElement("div");
+        s.className = "star";
+        s.style.left = (Math.random() * w) + "px";
+        s.style.top  = (Math.random() * h) + "px";
+        s.style.setProperty("--tw", (2.4 + Math.random() * 3.8).toFixed(2) + "s");
+        const size = (1 + Math.random() * 2.2).toFixed(2) + "px";
+        s.style.width = size;
+        s.style.height = size;
+        s.style.opacity = (0.35 + Math.random() * 0.55).toFixed(2);
+        root.appendChild(s);
+      }
+    }
+
+    /* ===================== Contador de vistas (local) ===================== */
+    function bumpLocalViews(){
+      const key = "al_2026_views";
+      const v = Number(localStorage.getItem(key) || "0") + 1;
+      localStorage.setItem(key, String(v));
+      $("viewsCount").textContent = String(v);
+    }
+
+    /* ===================== Música: AUTOPLAY inteligente ===================== */
+    const audio = $("bgMusic");
+    const btnMusic = $("btnMusic");
+    const banner = $("audioBanner");
+
+    let musicState = "AUTO"; // AUTO | ON | OFF
+
+    async function tryAutoplay(){
+      if (!audio) return;
+
+      audio.volume = 0.65;
+
+      try{
+        await audio.play();
+        musicState = "ON";
+        btnMusic.textContent = "🔊 Música: ON";
+        $("statusText").textContent = "Audio activo ✓";
+        setTimeout(() => $("statusText").textContent = "Dinámico · activo", 1400);
+        banner.style.display = "none";
+      }catch(err){
+        // Bloqueo típico del navegador: mostrar banner para 1 clic
+        musicState = "AUTO";
+        btnMusic.textContent = "🔊 Música: AUTO";
+        banner.style.display = "flex";
+      }
+    }
+
+    function setMusicOff(){
+      if (!audio) return;
+      audio.pause();
+      audio.currentTime = 0;
+      musicState = "OFF";
+      btnMusic.textContent = "🔇 Música: OFF";
+      banner.style.display = "none";
+    }
+
+    async function setMusicOnByUser(){
+      if (!audio) return;
+      try{
+        await audio.play();
+        musicState = "ON";
+        btnMusic.textContent = "🔊 Música: ON";
+        banner.style.display = "none";
+      }catch(e){
+        banner.style.display = "flex";
+      }
+    }
+
+    btnMusic.addEventListener("click", async () => {
+      if (musicState === "ON") return setMusicOff();
+      if (musicState === "OFF") return setMusicOnByUser();
+      // AUTO -> forzar ON por clic
+      return setMusicOnByUser();
+    });
+
+    $("btnEnableAudio").addEventListener("click", setMusicOnByUser);
+    $("btnDismissAudio").addEventListener("click", () => {
+      banner.style.display = "none";
+      setMusicOff();
+    });
+
+    // Si el usuario hace cualquier clic/tecla, intentamos activar (mejor UX)
+    function userGestureKick(){
+      if (musicState === "AUTO") setMusicOnByUser();
+      window.removeEventListener("pointerdown", userGestureKick);
+      window.removeEventListener("keydown", userGestureKick);
+    }
+    window.addEventListener("pointerdown", userGestureKick, { once:false });
+    window.addEventListener("keydown", userGestureKick, { once:false });
+
+    /* ===================== Pirotecnia (fuegos artificiales suaves) ===================== */
+    const canvas = $("fxCanvas");
+    const ctx = canvas.getContext("2d", { alpha:true });
+
+    let W = 0, H = 0;
+    function resizeCanvas(){
+      W = canvas.width = Math.floor(window.innerWidth * devicePixelRatio);
+      H = canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
+      canvas.style.width = "100vw";
+      canvas.style.height = "100vh";
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+    }
+
+    const particles = [];
+    let partyOn = false;
+    let rafId = null;
+    let lastSpawn = 0;
+
+    function rand(min,max){ return min + Math.random()*(max-min); }
+
+    function spawnFirework(){
+      const x = rand(window.innerWidth*0.18, window.innerWidth*0.82);
+      const y = rand(window.innerHeight*0.18, window.innerHeight*0.50);
+      const n = Math.floor(rand(28, 44));
+
+      for (let i=0;i<n;i++){
+        const a = (Math.PI*2) * (i/n) + rand(-0.12,0.12);
+        const speed = rand(1.0, 3.2);
+        particles.push({
+          x, y,
+          vx: Math.cos(a)*speed,
+          vy: Math.sin(a)*speed,
+          life: rand(40, 72),
+          age: 0,
+          size: rand(1.0, 2.4),
+          // color indirecto: dejamos que el navegador lo gestione por alpha y mezcla
+          alpha: rand(0.65, 0.95)
+        });
+      }
+    }
+
+    function step(){
+      // Fondo con “trail” para estela
+      ctx.fillStyle = "rgba(0,0,0,0.18)";
+      ctx.fillRect(0,0, window.innerWidth, window.innerHeight);
+
+      for (let i=particles.length-1;i>=0;i--){
+        const p = particles[i];
+        p.age++;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vx *= 0.985;
+        p.vy *= 0.985;
+        p.vy += 0.03; // gravedad suave
+
+        const t = 1 - (p.age / p.life);
+        const a = Math.max(0, p.alpha * t);
+
+        ctx.beginPath();
+        ctx.fillStyle = `rgba(255,255,255,${a})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+        ctx.fill();
+
+        if (p.age >= p.life) particles.splice(i,1);
+      }
+
+      const now = performance.now();
+      if (partyOn && now - lastSpawn > 850){
+        lastSpawn = now;
+        spawnFirework();
+      }
+
+      rafId = requestAnimationFrame(step);
+    }
+
+    function startFX(){
+      if (rafId) return;
+      ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+      lastSpawn = performance.now();
+      rafId = requestAnimationFrame(step);
+    }
+
+    function stopFX(){
+      if (!rafId) return;
+      cancelAnimationFrame(rafId);
+      rafId = null;
+      particles.length = 0;
+      ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+    }
+
+    const btnParty = $("btnParty");
+    btnParty.addEventListener("click", () => {
+      partyOn = !partyOn;
+      $("card").classList.toggle("party", partyOn);
+      $("partyBadge").style.display = partyOn ? "inline-flex" : "none";
+      btnParty.textContent = partyOn ? "🎆 Modo celebración: ON" : "🎆 Modo celebración: OFF";
+      nudgeCard();
+
+      if (partyOn) startFX();
+      else stopFX();
+    });
+
+    // Pausar efectos en pestaña oculta (rendimiento)
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) stopFX();
+      else if (partyOn) startFX();
+    });
+
+    /* ===================== Botones principales ===================== */
     $("btnNew").addEventListener("click", () => {
       nudgeCard();
       newMessage(true);
+      if (partyOn) spawnFirework(); // efecto al generar mensaje
     });
 
     $("btnCopy").addEventListener("click", async () => {
@@ -547,27 +796,35 @@
       }
     });
 
-    // Tecla espacio: nuevo mensaje
     window.addEventListener("keydown", (ev) => {
       if (ev.code === "Space"){
         ev.preventDefault();
         nudgeCard();
         newMessage(true);
+        if (partyOn) spawnFirework();
       }
     });
 
-    // Recalcular estrellas al redimensionar
     let resizeTimer = null;
     window.addEventListener("resize", () => {
       clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => createStars(54), 180);
+      resizeTimer = setTimeout(() => {
+        createStars(54);
+        resizeCanvas();
+      }, 180);
     });
 
     /* ===================== Inicialización ===================== */
     createStars(54);
+    resizeCanvas();
+    bumpLocalViews();
     newMessage(true);
     setInterval(updatePills, 60_000);
+
+    // Intento de autoplay inmediato (si el navegador lo permite)
+    tryAutoplay();
   </script>
 </body>
 </html>
+
 
