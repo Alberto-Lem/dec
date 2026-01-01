@@ -301,13 +301,29 @@
       100%{ transform: scale(1); }
     }
 
-    /* Iframe YouTube oculto (solo audio “simulado”) */
-    #ytAudio{
+    /* Banner para activar audio si autoplay se bloquea */
+    .audioBanner{
       position:fixed;
-      width:1px; height:1px;
-      left:-9999px; top:-9999px;
-      opacity:0;
-      pointer-events:none;
+      left:16px;
+      right:16px;
+      bottom:16px;
+      z-index:5;
+      display:none;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:18px;
+      background: rgba(0,0,0,.45);
+      border: 1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      color: var(--txt);
+    }
+    .audioBanner .mini{
+      font-size:13px;
+      color: var(--sub);
+      opacity:.92;
     }
 
     /* Accesibilidad / rendimiento */
@@ -323,8 +339,17 @@
   <div class="bg"></div>
   <canvas id="snowCanvas" aria-hidden="true"></canvas>
 
-  <!-- YouTube “solo audio”: se crea dinámicamente por JS para controlar autoplay -->
-  <div id="ytWrap"></div>
+  <!-- Audio local (ya lo subió al repo en la raíz) -->
+  <audio id="bgMusic" preload="auto" loop>
+    <source src="./futuristic-beat-146661.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Banner si el navegador bloquea el autoplay -->
+  <div class="audioBanner" id="audioBanner">
+    <div class="mini">🔊 El navegador bloqueó el audio automático. Presione para activarlo.</div>
+    <button class="btn btn-animate" id="btnEnableAudio" type="button">Activar audio</button>
+    <button class="btn btn-animate" id="btnDismissAudio" type="button">Cerrar</button>
+  </div>
 
   <main class="wrap">
     <section class="card" id="card">
@@ -335,7 +360,8 @@
           <span class="dot"></span>
           <span id="statusText">Dinámico · activo</span>
         </div>
-        <div class="badge" id="audioState">🔇 Audio: OFF</div>
+        <div class="badge" id="visitBadge">👁️ Visitas: <span id="visitCount">--</span></div>
+        <div class="badge" id="audioState">🔇 Música: OFF</div>
       </div>
 
       <div class="name">Alberto Lem</div>
@@ -374,8 +400,8 @@
           📋 Copiar mensaje
         </button>
 
-        <button class="btn btn-animate" id="btnAudio" type="button">
-          🔊 Activar audio (YouTube)
+        <button class="btn btn-animate" id="btnMusic" type="button">
+          🔊 Música: AUTO
         </button>
       </div>
 
@@ -488,12 +514,12 @@
     /* ===================== Nieve (Canvas particles) ===================== */
     const canvas = $("snowCanvas");
     const ctx = canvas.getContext("2d", { alpha:true });
-    let w = 0, h = 0, flakes = [];
+    let flakes = [];
     let snowRAF = null;
 
     function resizeSnow(){
-      w = canvas.width  = Math.floor(window.innerWidth  * devicePixelRatio);
-      h = canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
+      canvas.width  = Math.floor(window.innerWidth  * devicePixelRatio);
+      canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
       canvas.style.width = "100vw";
       canvas.style.height = "100vh";
       ctx.setTransform(1,0,0,1,0,0);
@@ -515,7 +541,6 @@
 
     function drawSnow(){
       ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
-
       for (const f of flakes){
         f.wob += f.woSpeed;
         f.x += f.vx + Math.sin(f.wob) * 0.35;
@@ -530,7 +555,6 @@
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
         ctx.fill();
       }
-
       snowRAF = requestAnimationFrame(drawSnow);
     }
 
@@ -538,7 +562,6 @@
       if (snowRAF) return;
       drawSnow();
     }
-
     function stopSnow(){
       if (!snowRAF) return;
       cancelAnimationFrame(snowRAF);
@@ -546,68 +569,103 @@
       ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
     }
 
-    /* Pausar cuando la pestaña no está visible */
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) stopSnow();
       else startSnow();
     });
 
-    /* ===================== Audio YouTube “solo audio” (iframe oculto) ===================== */
-    const YT_ID = "ms6goMSO9hU";
-    const ytWrap = $("ytWrap");
-    let ytOn = false;
-
-    function setAudioBadge(on){
-      $("audioState").textContent = on ? "🔊 Audio: ON" : "🔇 Audio: OFF";
-      $("btnAudio").textContent = on ? "🔇 Detener audio" : "🔊 Activar audio (YouTube)";
-    }
-
-    function createYT(autoplay){
-      ytWrap.innerHTML = "";
-      const iframe = document.createElement("iframe");
-      iframe.id = "ytAudio";
-      iframe.width = "1";
-      iframe.height = "1";
-      iframe.title = "YouTube audio player";
-      iframe.frameBorder = "0";
-      iframe.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      iframe.referrerPolicy = "strict-origin-when-cross-origin";
-      iframe.allowFullscreen = true;
-
-      // Nota: “solo audio” no existe como modo oficial; esto reproduce el video oculto.
-      iframe.src =
-        `https://www.youtube.com/embed/${YT_ID}` +
-        `?autoplay=${autoplay ? 1 : 0}` +
-        `&mute=0` +
-        `&controls=0` +
-        `&playsinline=1` +
-        `&rel=0` +
-        `&modestbranding=1`;
-
-      ytWrap.appendChild(iframe);
-    }
-
-    function startYT(){
-      // Crearlo con autoplay=1 (por políticas, puede requerir clic; por eso va en el botón)
-      createYT(true);
-      ytOn = true;
-      setAudioBadge(true);
-      $("statusText").textContent = "Audio activo ✓";
-      setTimeout(() => $("statusText").textContent = "Dinámico · activo", 1400);
-    }
-
-    function stopYT(){
-      ytWrap.innerHTML = ""; // al remover el iframe, se detiene
-      ytOn = false;
-      setAudioBadge(false);
-    }
-
-    $("btnAudio").addEventListener("click", () => {
-      nudgeCard();
-      if (!ytOn) startYT();
-      else stopYT();
+    window.addEventListener("resize", () => {
+      resizeSnow();
+      makeFlakes(120);
     });
+
+    /* ===================== Música local (MP3) ===================== */
+    const audio = $("bgMusic");
+    const btnMusic = $("btnMusic");
+    const audioState = $("audioState");
+    const banner = $("audioBanner");
+
+    let musicState = "AUTO"; // AUTO | ON | OFF
+
+    function updateAudioUI(){
+      if (musicState === "ON") {
+        btnMusic.textContent = "🔊 Música: ON";
+        audioState.textContent = "🔊 Música: ON";
+      } else if (musicState === "OFF") {
+        btnMusic.textContent = "🔇 Música: OFF";
+        audioState.textContent = "🔇 Música: OFF";
+      } else {
+        btnMusic.textContent = "🔊 Música: AUTO";
+        audioState.textContent = "🔊 Música: AUTO";
+      }
+    }
+
+    async function tryAutoplay(){
+      if (!audio) return;
+      audio.volume = 0.65;
+      try{
+        await audio.play();
+        musicState = "ON";
+        banner.style.display = "none";
+      }catch(e){
+        musicState = "AUTO";
+        banner.style.display = "flex";
+      }
+      updateAudioUI();
+    }
+
+    function stopMusic(){
+      if (!audio) return;
+      audio.pause();
+      audio.currentTime = 0;
+      musicState = "OFF";
+      banner.style.display = "none";
+      updateAudioUI();
+    }
+
+    async function startMusicByUser(){
+      if (!audio) return;
+      try{
+        await audio.play();
+        musicState = "ON";
+        banner.style.display = "none";
+      }catch(e){
+        banner.style.display = "flex";
+      }
+      updateAudioUI();
+    }
+
+    btnMusic.addEventListener("click", () => {
+      nudgeCard();
+      if (musicState === "ON") stopMusic();
+      else startMusicByUser();
+    });
+
+    $("btnEnableAudio").addEventListener("click", () => { nudgeCard(); startMusicByUser(); });
+    $("btnDismissAudio").addEventListener("click", () => { stopMusic(); });
+
+    // En cuanto el usuario interactúe, intentamos activar si estaba en AUTO
+    function userGestureKick(){
+      if (musicState === "AUTO") startMusicByUser();
+      window.removeEventListener("pointerdown", userGestureKick);
+      window.removeEventListener("keydown", userGestureKick);
+    }
+    window.addEventListener("pointerdown", userGestureKick);
+    window.addEventListener("keydown", userGestureKick);
+
+    /* ===================== Contador de visitas ===================== */
+    /*
+      IMPORTANTE:
+      - En GitHub Pages NO existe base de datos, por tanto:
+        1) Este contador es LOCAL (por navegador). Sirve para “mostrar algo” de inmediato.
+        2) Para contador REAL global, necesita un servicio (Firebase / Cloudflare / etc.).
+    */
+    function updateLocalVisits(){
+      const key = "ALBERTO_LEM_2026_VISITS";
+      const v = Number(localStorage.getItem(key) || "0") + 1;
+      localStorage.setItem(key, String(v));
+      $("visitCount").textContent = String(v);
+    }
 
     /* ===================== Inicialización ===================== */
     newMessage(true);
@@ -617,12 +675,10 @@
     makeFlakes(120);
     startSnow();
 
-    window.addEventListener("resize", () => {
-      resizeSnow();
-      makeFlakes(120);
-    });
+    updateLocalVisits();
+    updateAudioUI();
+    tryAutoplay();
   </script>
 </body>
 </html>
-
 
