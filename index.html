@@ -6,12 +6,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
   <style>
-    :root{
-      --glass: rgba(255,255,255,.12);
-      --stroke: rgba(255,255,255,.20);
-      --shadow: 0 20px 70px rgba(0,0,0,.45);
-    }
-
     body{
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto;
@@ -21,37 +15,16 @@
       background:#041c2d;
     }
 
-    /* Fondo animado */
     .bg{
       position:fixed; inset:-40px;
       background:
         radial-gradient(700px 380px at 15% 18%, rgba(44,198,255,.30), transparent 70%),
         radial-gradient(650px 420px at 85% 22%, rgba(255,108,201,.22), transparent 70%),
-        radial-gradient(900px 520px at 50% 90%, rgba(255,225,120,.20), transparent 70%),
         linear-gradient(180deg, #0b4f7a 0%, #041c2d 70%);
-      filter:saturate(1.05);
       animation:bgMove 10s ease-in-out infinite alternate;
     }
     @keyframes bgMove{
-      from{ transform:translate3d(0,0,0) scale(1); }
-      to{ transform:translate3d(-20px,10px,0) scale(1.04); }
-    }
-
-    /* Partículas suaves */
-    .stars{
-      position:fixed; inset:0; pointer-events:none;
-      opacity:.55;
-      background-image:
-        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.8), transparent 60%),
-        radial-gradient(1px 1px at 180px 130px, rgba(255,255,255,.7), transparent 60%),
-        radial-gradient(1.5px 1.5px at 320px 60px, rgba(255,255,255,.6), transparent 60%),
-        radial-gradient(1px 1px at 420px 210px, rgba(255,255,255,.6), transparent 60%),
-        radial-gradient(2px 2px at 560px 160px, rgba(255,255,255,.7), transparent 60%);
-      background-size: 600px 260px;
-      animation: twinkle 4.5s linear infinite;
-    }
-    @keyframes twinkle{
-      50%{ opacity:.35; }
+      to{ transform:translate(-20px,10px) scale(1.04); }
     }
 
     .wrap{
@@ -66,297 +39,145 @@
     .card{
       width:min(680px, 94vw);
       border-radius:22px;
-      padding:34px 28px;
-      background:var(--glass);
-      border:1px solid var(--stroke);
-      box-shadow:var(--shadow);
+      padding:36px 28px;
+      background:rgba(255,255,255,.12);
+      border:1px solid rgba(255,255,255,.18);
       backdrop-filter: blur(12px);
+      box-shadow:0 20px 70px rgba(0,0,0,.45);
       text-align:center;
-      transform:translateY(8px);
-      opacity:0;
-      animation: enter .65s ease forwards;
+      animation: enter .6s ease forwards;
     }
     @keyframes enter{
-      to{ transform:translateY(0); opacity:1; }
-    }
-
-    .badge{
-      display:inline-flex;
-      gap:10px;
-      align-items:center;
-      padding:8px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.10);
-      border:1px solid rgba(255,255,255,.18);
-      font-weight:700;
-      letter-spacing:.2px;
-      margin-bottom:14px;
+      from{opacity:0;transform:translateY(10px)}
+      to{opacity:1;transform:translateY(0)}
     }
 
     .emoji{
-      font-size:62px;
-      line-height:1;
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
-      animation: bounce 2.2s ease-in-out infinite;
+      font-size:64px;
+      animation:bounce 2s ease-in-out infinite;
     }
     @keyframes bounce{
-      0%,100%{ transform:translateY(0) rotate(0deg); }
-      50%{ transform:translateY(-10px) rotate(-2deg); }
+      50%{transform:translateY(-10px)}
     }
 
     h1{
       margin:14px 0 8px;
-      font-size: clamp(26px, 4.5vw, 40px);
-      letter-spacing:.2px;
+      font-size:clamp(26px,4.5vw,40px);
     }
 
     p{
       margin:0 auto 18px;
       max-width:56ch;
       opacity:.92;
-      font-size: clamp(14px, 2.4vw, 17px);
       line-height:1.55;
     }
 
     .quote{
-      margin:18px auto 0;
-      font-size: clamp(15px, 2.6vw, 18px);
-      opacity:.98;
-      font-weight:650;
-    }
-
-    .meta{
-      margin-top:18px;
-      display:flex;
-      flex-wrap:wrap;
-      justify-content:center;
-      gap:10px;
-      opacity:.88;
-      font-size:13px;
-    }
-    .pill{
-      padding:8px 12px;
-      border-radius:999px;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
+      font-weight:600;
+      margin:18px 0;
+      font-size:clamp(15px,2.6vw,18px);
     }
 
     .actions{
-      margin-top:20px;
+      margin-top:22px;
       display:flex;
       justify-content:center;
-      gap:10px;
+      gap:12px;
       flex-wrap:wrap;
     }
-    button{
-      border:0;
-      cursor:pointer;
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 18px;
       border-radius:14px;
-      padding:11px 16px;
       font-weight:800;
-      color:#04314a;
+      text-decoration:none;
+      transition:transform .15s ease, opacity .15s ease;
+      border:1px solid rgba(255,255,255,.25);
+    }
+
+    .btn-primary{
       background:#fff;
-      transition: transform .12s ease, opacity .12s ease;
+      color:#04314a;
     }
-    button:active{ transform: scale(.98); }
-    .ghost{
-      background:rgba(255,255,255,.10);
+
+    .btn-facebook{
+      background:rgba(24,119,242,.85);
       color:#fff;
-      border:1px solid rgba(255,255,255,.18);
     }
 
-    /* Confeti */
-    .confetti{
-      position:fixed; inset:0; pointer-events:none;
-      z-index:1;
-    }
-    .piece{
-      position:absolute;
-      top:-12px;
-      left:var(--x);
-      width:9px;
-      height:14px;
-      border-radius:3px;
-      background:hsl(var(--h), 90%, 60%);
+    .btn:hover{
+      transform:translateY(-2px);
       opacity:.95;
-      transform:rotate(var(--r));
-      animation: fall linear infinite;
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,.25));
-    }
-    @keyframes fall{
-      to{ transform:translateY(112vh) rotate(380deg); }
     }
 
-    /* Mensaje final */
-    .muted{
+    .footer{
+      margin-top:18px;
+      font-size:13px;
       opacity:.85;
-      font-size:14px;
-      margin-top:10px;
     }
   </style>
 </head>
 
 <body>
   <div class="bg"></div>
-  <div class="stars"></div>
-  <div class="confetti" id="confetti"></div>
 
   <main class="wrap">
-    <section class="card" id="card">
-      <div class="badge" id="badge">✨ Mensaje Especial</div>
-      <div class="emoji" id="emoji">🎊</div>
+    <section class="card">
+      <div class="emoji">🎊</div>
 
-      <h1 id="title">¡Feliz Año Nuevo!</h1>
-      <p id="subtitle">Que estos días estén llenos de éxitos, salud y nuevas oportunidades.</p>
+      <h1>¡Mensaje Especial!</h1>
+      <p>
+        Gracias por tomarse un momento para leer este mensaje.
+        Que estos días estén llenos de energía positiva,
+        motivación y nuevas oportunidades.
+      </p>
 
-      <div class="quote" id="quote">“Hoy es un buen día para empezar con energía.”</div>
-
-      <div class="meta">
-        <div class="pill" id="daysLeftPill">⏳ Disponible por 5 días</div>
-        <div class="pill" id="datePill">📅 2026-01-01</div>
-        <div class="pill" id="timePill">🕒 --:--:--</div>
+      <div class="quote" id="quote">
+        “Hoy es un buen día para avanzar con determinación.”
       </div>
 
       <div class="actions">
-        <button type="button" onclick="nextMessage()">Cambiar mensaje</button>
-        <button type="button" class="ghost" onclick="toggleConfetti()">Activar/Desactivar confeti</button>
+        <a class="btn btn-primary" href="#" onclick="nextQuote()">
+          ✨ Cambiar mensaje
+        </a>
+
+        <a class="btn btn-facebook"
+           href="https://www.facebook.com/share/16Lna6EscP/?mibextid=wwXIfr"
+           target="_blank"
+           rel="noopener">
+          📘 Visitar mi Facebook
+        </a>
       </div>
 
-      <div class="muted" id="footerNote">Compártelo con quien quieras 🎁</div>
+      <div class="footer">
+        Compártalo libremente en sus redes sociales.
+      </div>
     </section>
   </main>
 
   <script>
-    /* ========= CONFIGURACIÓN: EVENTO POR 5 DÍAS ========= */
-    const EVENT = {
-      startDate: '2026-01-01', // inicio (YYYY-MM-DD)
-      durationDays: 5,         // visible 5 días
-      badge: '✨ Mensaje Especial',
-      emoji: '🎊',
-      title: '¡Feliz Año Nuevo!',
-      subtitle: 'Que estos días estén llenos de éxitos, salud y nuevas oportunidades.',
-      confetti: true
-    };
-
-    /* Frases rotativas (dinámico) */
     const QUOTES = [
-      '“Hoy es un buen día para empezar con energía.”',
-      '“Paso a paso se construyen grandes resultados.”',
-      '“Que nunca falte la esperanza, la disciplina y la fe.”',
-      '“Lo mejor está por venir, siga avanzando.”',
-      '“Pequeñas acciones diarias cambian todo.”',
-      '“Que este momento le regale paz y motivación.”'
+      '“Hoy es un buen día para avanzar con determinación.”',
+      '“Cada paso firme construye un mejor mañana.”',
+      '“La constancia siempre supera a la suerte.”',
+      '“Nunca es tarde para empezar algo valioso.”',
+      '“La disciplina abre puertas que el talento solo no puede.”'
     ];
 
-    let quoteIndex = 0;
-    let confettiEnabled = EVENT.confetti;
+    let index = 0;
 
-    function parseDateLocal(yyyy_mm_dd){
-      // Fuerza medianoche local para evitar desfases por zona horaria
-      return new Date(yyyy_mm_dd + 'T00:00:00');
+    function nextQuote(){
+      index++;
+      document.getElementById('quote').textContent =
+        QUOTES[index % QUOTES.length];
     }
 
-    function getEventWindow(){
-      const start = parseDateLocal(EVENT.startDate);
-      const end = new Date(start);
-      end.setDate(end.getDate() + EVENT.durationDays);
-      return { start, end };
-    }
-
-    function isEventActive(){
-      const { start, end } = getEventWindow();
-      const now = new Date();
-      return now >= start && now < end;
-    }
-
-    function daysLeft(){
-      const { end } = getEventWindow();
-      const now = new Date();
-      const ms = end - now;
-      const d = Math.ceil(ms / (1000 * 60 * 60 * 24));
-      return Math.max(d, 0);
-    }
-
-    function paint(){
-      document.getElementById('badge').textContent = EVENT.badge;
-      document.getElementById('emoji').textContent = EVENT.emoji;
-      document.getElementById('title').textContent = EVENT.title;
-      document.getElementById('subtitle').textContent = EVENT.subtitle;
-      document.getElementById('datePill').textContent = '📅 ' + EVENT.startDate;
-      document.getElementById('quote').textContent = QUOTES[quoteIndex % QUOTES.length];
-    }
-
-    function updateClock(){
-      const now = new Date();
-      const pad = (n) => String(n).padStart(2,'0');
-      const t = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-      document.getElementById('timePill').textContent = '🕒 ' + t;
-    }
-
-    function updateDaysLeft(){
-      const active = isEventActive();
-      const pill = document.getElementById('daysLeftPill');
-      const footer = document.getElementById('footerNote');
-
-      if (active){
-        const d = daysLeft();
-        pill.textContent = `⏳ Disponible por ${d} día(s) más`;
-        footer.textContent = 'Compártelo con quien quieras 🎁';
-      } else {
-        pill.textContent = '✅ Evento finalizado';
-        footer.textContent = 'Gracias por haber visitado este mensaje.';
-        // Si finalizó, puede desactivar confeti automáticamente
-        confettiEnabled = false;
-        clearConfetti();
-      }
-    }
-
-    function nextMessage(){
-      quoteIndex++;
-      document.getElementById('quote').textContent = QUOTES[quoteIndex % QUOTES.length];
-    }
-
-    function buildConfetti(){
-      const c = document.getElementById('confetti');
-      c.innerHTML = '';
-      for (let i = 0; i < 85; i++) {
-        const p = document.createElement('div');
-        p.className = 'piece';
-        p.style.setProperty('--x', (Math.random() * 100) + 'vw');
-        p.style.setProperty('--h', Math.random() * 360);
-        p.style.setProperty('--r', (Math.random() * 180) + 'deg');
-        p.style.animationDuration = (3 + Math.random() * 5) + 's';
-        p.style.animationDelay = (Math.random() * 1.5) + 's';
-        c.appendChild(p);
-      }
-    }
-
-    function clearConfetti(){
-      document.getElementById('confetti').innerHTML = '';
-    }
-
-    function toggleConfetti(){
-      confettiEnabled = !confettiEnabled;
-      if (confettiEnabled && isEventActive()) buildConfetti();
-      else clearConfetti();
-    }
-
-    /* ========= INICIO ========= */
-    paint();
-    updateClock();
-    updateDaysLeft();
-
-    // Confeti si está activo
-    if (confettiEnabled && isEventActive()) buildConfetti();
-
-    // Actualizaciones periódicas
-    setInterval(updateClock, 1000);
-    setInterval(updateDaysLeft, 60 * 1000); // cada minuto
-    setInterval(() => {
-      // rotar frase cada 8 segundos
-      if (isEventActive()) nextMessage();
-    }, 8000);
+    setInterval(nextQuote, 9000);
   </script>
 </body>
 </html>
+
 
