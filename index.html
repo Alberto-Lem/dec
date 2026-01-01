@@ -1,1 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Mi sitio</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto}
+
+    .splash{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background: radial-gradient(circle at top, #0b4f7a, #041c2d);
+      color:#fff; overflow:hidden;
+      z-index:9999;
+    }
+    .card{
+      text-align:center; padding:36px 28px; width:min(520px,92vw);
+      border-radius:18px;
+      background: rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      animation: enter .6s ease;
+      z-index:2;
+    }
+    .emoji{font-size:56px}
+    h1{margin:10px 0 6px}
+    p{opacity:.9;margin:0 0 18px}
+    button{
+      border:0; cursor:pointer; font-weight:700;
+      border-radius:12px; padding:10px 16px;
+      background:#fff; color:#00324d;
+    }
+    small{display:block;margin-top:12px;opacity:.75}
+
+    .confetti{position:absolute; inset:0; pointer-events:none}
+    .piece{
+      position:absolute; top:-10px; left:var(--x);
+      width:8px; height:12px;
+      background:hsl(var(--h),90%,60%);
+      animation: fall linear infinite;
+    }
+    @keyframes fall { to { transform:translateY(110vh) rotate(360deg) } }
+    @keyframes enter { from{opacity:0;transform:translateY(10px)} to{opacity:1} }
+
+    #app{ display:none; }
+  </style>
+</head>
+
+<body>
+
+<div class="splash" id="splash">
+  <div class="card">
+    <div class="emoji" id="emoji">🎊</div>
+    <h1 id="title">¡Feliz Año Nuevo!</h1>
+    <p id="subtitle">Que estos días estén llenos de éxitos.</p>
+
+    <button type="button" onclick="enterNow()">Entrar ahora</button>
+    <small id="counter">Entrando en 5s…</small>
+  </div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<div id="app">
+  <!-- AQUÍ VA SU CONTENIDO REAL -->
+  <div style="padding:24px">
+    <h2>Página normal</h2>
+    <p>Contenido principal del sitio.</p>
+  </div>
+</div>
+
+<script>
+  /* ========= CONFIGURACIÓN DEL EVENTO ========= */
+  const EVENT = {
+    startDate: '2026-01-01', // fecha de inicio (YYYY-MM-DD)
+    durationDays: 5,        // visible durante 5 días
+    emoji: '🎊',
+    title: '¡Feliz Año Nuevo!',
+    subtitle: 'Gracias por acompañarnos estos días.',
+    seconds: 5,
+    confetti: true
+  };
+
+  function isEventActive() {
+    const start = new Date(EVENT.startDate + 'T00:00:00');
+    const end = new Date(start);
+    end.setDate(end.getDate() + EVENT.durationDays);
+    const now = new Date();
+    return now >= start && now < end;
+  }
+
+  function showApp(){
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  if (!isEventActive()) {
+    showApp();
+  } else {
+    document.getElementById('emoji').textContent = EVENT.emoji;
+    document.getElementById('title').textContent = EVENT.title;
+    document.getElementById('subtitle').textContent = EVENT.subtitle;
+
+    if (EVENT.confetti) {
+      const c = document.getElementById('confetti');
+      for (let i = 0; i < 60; i++) {
+        const p = document.createElement('div');
+        p.className = 'piece';
+        p.style.setProperty('--x', Math.random() * 100 + 'vw');
+        p.style.setProperty('--h', Math.random() * 360);
+        p.style.animationDuration = 3 + Math.random() * 4 + 's';
+        c.appendChild(p);
+      }
+    }
+
+    let left = EVENT.seconds;
+    const counter = document.getElementById('counter');
+    const timer = setInterval(() => {
+      left--;
+      counter.textContent = `Entrando en ${left}s…`;
+      if (left <= 0) enterNow();
+    }, 1000);
+
+    window.enterNow = function(){
+      clearInterval(timer);
+      showApp();
+    }
+  }
+</script>
+
+</body>
+</html>
 
