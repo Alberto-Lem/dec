@@ -18,12 +18,16 @@
       --sub: rgba(255,255,255,.86);
       --muted: rgba(255,255,255,.72);
 
-      --glowA: rgba(44,198,255,.38);
-      --glowB: rgba(255,108,201,.24);
+      --glowA: rgba(44,198,255,.40);
+      --glowB: rgba(255,108,201,.26);
       --glowC: rgba(255,225,120,.18);
 
       --linkedin:#0A66C2;
       --radius: 28px;
+
+      --ok: rgba(88, 255, 160, .95);
+      --warn: rgba(255, 206, 84, .95);
+      --err: rgba(255, 90, 90, .95);
     }
 
     *{ box-sizing:border-box; }
@@ -37,7 +41,7 @@
       overflow:hidden;
     }
 
-    /* Fondo SIN rotaciones */
+    /* Fondo suave */
     .bg{
       position:fixed; inset:-60px;
       background:
@@ -52,7 +56,7 @@
       to{ transform:translate(-14px,8px) scale(1.02); }
     }
 
-    /* Canvas nieve */
+    /* Nieve (Canvas) */
     #snowCanvas{
       position:fixed;
       inset:0;
@@ -73,7 +77,7 @@
     }
 
     .card{
-      width:min(940px, 95vw);
+      width:min(980px, 95vw);
       padding:44px 36px;
       border-radius:var(--radius);
       background:var(--glass);
@@ -91,7 +95,7 @@
       to{opacity:1; transform:translateY(0) scale(1)}
     }
 
-    /* Borde luminoso suave (sin rotación) */
+    /* borde luminoso sutil */
     .card::before{
       content:"";
       position:absolute; inset:0;
@@ -105,6 +109,7 @@
       z-index:0;
     }
 
+    /* brillo que cruza */
     .sheen{
       position:absolute;
       inset:-40%;
@@ -135,7 +140,7 @@
       justify-content:center;
       gap:10px;
       flex-wrap:wrap;
-      margin-bottom:10px;
+      margin-bottom:12px;
     }
 
     .badge{
@@ -150,6 +155,7 @@
       font-size:13px;
       user-select:none;
     }
+
     .dot{
       width:10px; height:10px;
       border-radius:999px;
@@ -157,6 +163,10 @@
       animation: pulse 1.6s ease-out infinite;
       box-shadow: 0 0 0 rgba(44,198,255,.35);
     }
+    .dot.ok{ background: var(--ok); }
+    .dot.warn{ background: var(--warn); }
+    .dot.err{ background: var(--err); }
+
     @keyframes pulse{
       0%   { box-shadow: 0 0 0 0 rgba(44,198,255,.35); }
       70%  { box-shadow: 0 0 0 10px rgba(44,198,255,0); }
@@ -271,10 +281,7 @@
       border-color: rgba(255,255,255,.18);
     }
 
-    .btn-animate{
-      position:relative;
-      overflow:hidden;
-    }
+    .btn-animate{ position:relative; overflow:hidden; }
     .btn-animate::after{
       content:"";
       position:absolute;
@@ -301,7 +308,7 @@
       100%{ transform: scale(1); }
     }
 
-    /* Banner para activar audio si autoplay se bloquea */
+    /* Banner audio */
     .audioBanner{
       position:fixed;
       left:16px;
@@ -326,7 +333,79 @@
       opacity:.92;
     }
 
-    /* Accesibilidad / rendimiento */
+    /* Panel stats */
+    .stats{
+      margin-top:18px;
+      text-align:left;
+      max-width: 860px;
+      margin-left:auto;
+      margin-right:auto;
+      border-top:1px solid rgba(255,255,255,.12);
+      padding-top:16px;
+    }
+    .statsHead{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .statsTitle{
+      font-weight:950;
+      letter-spacing:.2px;
+      color: var(--txt);
+    }
+    .statsControls{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .input{
+      appearance:none;
+      border:1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      color: var(--txt);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+      font-weight:750;
+      font-size:13px;
+    }
+    .input::-webkit-calendar-picker-indicator{ filter: invert(1); opacity:.85; }
+
+    .chart{
+      height:140px;
+      display:flex;
+      align-items:flex-end;
+      gap:6px;
+      padding:12px;
+      border-radius:18px;
+      background: rgba(0,0,0,.12);
+      border:1px solid rgba(255,255,255,.10);
+      overflow:hidden;
+    }
+    .bar{
+      flex:1;
+      min-width: 6px;
+      border-radius: 12px 12px 8px 8px;
+      background: linear-gradient(180deg, rgba(44,198,255,.90), rgba(255,108,201,.55));
+      opacity:.9;
+      transform: translateZ(0);
+    }
+    .bar:hover{ opacity:1; filter:saturate(120%); }
+    .legend{
+      margin-top:10px;
+      font-size:13px;
+      color: var(--muted);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
     @media (prefers-reduced-motion: reduce){
       .bg,.sheen,.dot,.cursor{ animation:none !important; }
       #snowCanvas{ display:none; }
@@ -339,12 +418,11 @@
   <div class="bg"></div>
   <canvas id="snowCanvas" aria-hidden="true"></canvas>
 
-  <!-- Audio local (ya lo subió al repo en la raíz) -->
+  <!-- Audio local (suba el MP3 a la raíz del repo: /visits/futuristic-beat-146661.mp3) -->
   <audio id="bgMusic" preload="auto" loop>
     <source src="./futuristic-beat-146661.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- Banner si el navegador bloquea el autoplay -->
   <div class="audioBanner" id="audioBanner">
     <div class="mini">🔊 El navegador bloqueó el audio automático. Presione para activarlo.</div>
     <button class="btn btn-animate" id="btnEnableAudio" type="button">Activar audio</button>
@@ -357,10 +435,10 @@
 
       <div class="toprow">
         <div class="badge">
-          <span class="dot"></span>
+          <span class="dot" id="statusDot"></span>
           <span id="statusText">Dinámico · activo</span>
         </div>
-        <div class="badge" id="visitBadge">👁️ Visitas: <span id="visitCount">--</span></div>
+        <div class="badge" id="visitBadge">👁️ Visitas: <span id="visitCount">—</span></div>
         <div class="badge" id="audioState">🔇 Música: OFF</div>
       </div>
 
@@ -392,27 +470,58 @@
           💼 Ver perfil en LinkedIn
         </a>
 
-        <button class="btn btn-animate" id="btnNew" type="button">
-          ✨ Generar otro mensaje
-        </button>
-
-        <button class="btn btn-animate" id="btnCopy" type="button">
-          📋 Copiar mensaje
-        </button>
-
-        <button class="btn btn-animate" id="btnMusic" type="button">
-          🔊 Música: AUTO
-        </button>
+        <button class="btn btn-animate" id="btnNew" type="button">✨ Generar otro mensaje</button>
+        <button class="btn btn-animate" id="btnCopy" type="button">📋 Copiar mensaje</button>
+        <button class="btn btn-animate" id="btnMusic" type="button">🔊 Música: AUTO</button>
       </div>
 
-      <div class="footer">
-        Mensaje personal compartido públicamente · Año 2026
+      <!-- ================== STATS (RANGO, HORA, MES) ================== -->
+      <div class="stats" id="stats">
+        <div class="statsHead">
+          <div class="statsTitle">📊 Estadísticas (desde su API)</div>
+          <div class="statsControls">
+            <input class="input" type="date" id="fromDate" />
+            <input class="input" type="date" id="toDate" />
+            <button class="btn btn-animate" id="btnLoadDaily" type="button">Ver por día</button>
+
+            <input class="input" type="date" id="hourlyDate" />
+            <button class="btn btn-animate" id="btnLoadHourly" type="button">Ver por hora</button>
+
+            <input class="input" type="number" min="2020" max="2100" id="yearInput" />
+            <button class="btn btn-animate" id="btnLoadMonthly" type="button">Ver por mes</button>
+          </div>
+        </div>
+
+        <div class="chart" id="chartBars" aria-label="Gráfica"></div>
+        <div class="legend">
+          <div id="legendLeft">—</div>
+          <div id="legendRight">—</div>
+        </div>
       </div>
+
+      <div class="footer">Mensaje personal compartido públicamente · Año 2026</div>
     </section>
   </main>
 
   <script>
-    /* ===================== Mensajes dinámicos ===================== */
+    /* ===================== CONFIG API (IMPORTANTE) ===================== */
+    // Ajuste a su dominio real:
+    const API_BASE = "https://api.systemblacklem.com";
+    // PageKey del contador:
+    const PAGE_KEY = "visits"; // o "dec-2026"
+
+    // Endpoints esperados en su backend:
+    // GET  /api/public/visits/track?page=visits
+    // GET  /api/public/visits/stats/daily?page=visits&from=YYYY-MM-DD&to=YYYY-MM-DD
+    // GET  /api/public/visits/stats/hourly?page=visits&date=YYYY-MM-DD
+    // GET  /api/public/visits/stats/monthly?page=visits&year=YYYY
+    const ENDPOINTS = {
+      track:  `${API_BASE}/api/public/visits/track?page=${encodeURIComponent(PAGE_KEY)}`,
+      daily:  (from, to) => `${API_BASE}/api/public/visits/stats/daily?page=${encodeURIComponent(PAGE_KEY)}&from=${from}&to=${to}`,
+      hourly: (date)    => `${API_BASE}/api/public/visits/stats/hourly?page=${encodeURIComponent(PAGE_KEY)}&date=${date}`,
+      monthly:(year)    => `${API_BASE}/api/public/visits/stats/monthly?page=${encodeURIComponent(PAGE_KEY)}&year=${year}`,
+    };
+
     const MESSAGES = {
       morning: [
         "Que su mañana inicie con enfoque, calma y determinación.",
@@ -495,12 +604,11 @@
       const text = $("dynamicMsg").textContent.trim();
       try{
         await navigator.clipboard.writeText(text);
-        $("statusText").textContent = "Copiado ✓";
-        setTimeout(() => $("statusText").textContent = "Dinámico · activo", 1400);
+        setStatus("Copiado ✓", "ok");
       }catch(e){
-        $("statusText").textContent = "No se pudo copiar";
-        setTimeout(() => $("statusText").textContent = "Dinámico · activo", 1400);
+        setStatus("No se pudo copiar", "err");
       }
+      setTimeout(() => setStatus("Dinámico · activo", "info"), 1400);
     });
 
     window.addEventListener("keydown", (ev) => {
@@ -511,7 +619,19 @@
       }
     });
 
-    /* ===================== Nieve (Canvas particles) ===================== */
+    /* ===================== ESTADO UI ===================== */
+    function setStatus(text, level){
+      $("statusText").textContent = text;
+
+      const dot = $("statusDot");
+      dot.classList.remove("ok","warn","err");
+      if (level === "ok") dot.classList.add("ok");
+      else if (level === "warn") dot.classList.add("warn");
+      else if (level === "err") dot.classList.add("err");
+      else { /* info: color base */ }
+    }
+
+    /* ===================== NIEVE (Canvas) ===================== */
     const canvas = $("snowCanvas");
     const ctx = canvas.getContext("2d", { alpha:true });
     let flakes = [];
@@ -579,7 +699,7 @@
       makeFlakes(120);
     });
 
-    /* ===================== Música local (MP3) ===================== */
+    /* ===================== MÚSICA (autoplay controlado) ===================== */
     const audio = $("bgMusic");
     const btnMusic = $("btnMusic");
     const audioState = $("audioState");
@@ -644,7 +764,6 @@
     $("btnEnableAudio").addEventListener("click", () => { nudgeCard(); startMusicByUser(); });
     $("btnDismissAudio").addEventListener("click", () => { stopMusic(); });
 
-    // En cuanto el usuario interactúe, intentamos activar si estaba en AUTO
     function userGestureKick(){
       if (musicState === "AUTO") startMusicByUser();
       window.removeEventListener("pointerdown", userGestureKick);
@@ -653,21 +772,131 @@
     window.addEventListener("pointerdown", userGestureKick);
     window.addEventListener("keydown", userGestureKick);
 
-    /* ===================== Contador de visitas ===================== */
-    /*
-      IMPORTANTE:
-      - En GitHub Pages NO existe base de datos, por tanto:
-        1) Este contador es LOCAL (por navegador). Sirve para “mostrar algo” de inmediato.
-        2) Para contador REAL global, necesita un servicio (Firebase / Cloudflare / etc.).
-    */
-    function updateLocalVisits(){
-      const key = "ALBERTO_LEM_2026_VISITS";
-      const v = Number(localStorage.getItem(key) || "0") + 1;
-      localStorage.setItem(key, String(v));
-      $("visitCount").textContent = String(v);
+    /* ===================== TRACK VISIT + STATS (API REAL) ===================== */
+    async function fetchJson(url){
+      const res = await fetch(url, { method: "GET" });
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status} ${txt}`);
+      }
+      return res.json();
     }
 
-    /* ===================== Inicialización ===================== */
+    async function trackVisit(){
+      try{
+        const data = await fetchJson(ENDPOINTS.track);
+        $("visitCount").textContent = String(data.total ?? "—");
+        setStatus("Contador global · OK", "ok");
+      }catch(e){
+        // Si falla API, no invente número (mejor mostrar estado real)
+        $("visitCount").textContent = "—";
+        setStatus("API no disponible (contador)", "warn");
+      }
+    }
+
+    function setDefaultDates(){
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, "0");
+      const dd = String(today.getDate()).padStart(2, "0");
+      const iso = `${yyyy}-${mm}-${dd}`;
+
+      $("hourlyDate").value = iso;
+      $("yearInput").value = String(yyyy);
+
+      // rango: últimos 14 días
+      const from = new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000);
+      const fyyyy = from.getFullYear();
+      const fmm = String(from.getMonth() + 1).padStart(2, "0");
+      const fdd = String(from.getDate()).padStart(2, "0");
+      $("fromDate").value = `${fyyyy}-${fmm}-${fdd}`;
+      $("toDate").value = iso;
+    }
+
+    function renderBars(points, titleLeft, titleRight){
+      const container = $("chartBars");
+      container.innerHTML = "";
+
+      if (!points || points.length === 0){
+        $("legendLeft").textContent = titleLeft;
+        $("legendRight").textContent = "Sin datos";
+        return;
+      }
+
+      const max = Math.max(...points.map(p => Number(p.value || 0)), 1);
+      for (const p of points){
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        const val = Number(p.value || 0);
+        const h = Math.max(6, Math.round((val / max) * 120));
+        bar.style.height = `${h}px`;
+        bar.title = `${p.key}: ${val}`;
+        container.appendChild(bar);
+      }
+
+      const sum = points.reduce((a, p) => a + Number(p.value || 0), 0);
+      $("legendLeft").textContent = titleLeft;
+      $("legendRight").textContent = `${titleRight} · Total: ${sum}`;
+    }
+
+    async function loadDaily(){
+      const from = $("fromDate").value;
+      const to = $("toDate").value;
+      if (!from || !to){
+        setStatus("Seleccione rango de fechas", "warn");
+        return;
+      }
+
+      try{
+        const data = await fetchJson(ENDPOINTS.daily(from, to));
+        renderBars(data, `Por día (${from} a ${to})`, "Vistas");
+        setStatus("Stats diarios · OK", "ok");
+      }catch(e){
+        renderBars([], `Por día (${from} a ${to})`, "Error");
+        setStatus("Error al cargar stats diarios", "err");
+      }
+    }
+
+    async function loadHourly(){
+      const date = $("hourlyDate").value;
+      if (!date){
+        setStatus("Seleccione una fecha", "warn");
+        return;
+      }
+
+      try{
+        const data = await fetchJson(ENDPOINTS.hourly(date));
+        renderBars(data, `Por hora (${date} UTC)`, "Vistas");
+        setStatus("Stats por hora · OK", "ok");
+      }catch(e){
+        renderBars([], `Por hora (${date})`, "Error");
+        setStatus("Error al cargar stats por hora", "err");
+      }
+    }
+
+    async function loadMonthly(){
+      const year = $("yearInput").value;
+      const y = Number(year);
+      if (!y || y < 2000 || y > 2100){
+        setStatus("Año inválido", "warn");
+        return;
+      }
+
+      try{
+        const data = await fetchJson(ENDPOINTS.monthly(y));
+        renderBars(data, `Por mes (${y})`, "Vistas");
+        setStatus("Stats mensual · OK", "ok");
+      }catch(e){
+        renderBars([], `Por mes (${y})`, "Error");
+        setStatus("Error al cargar stats mensual", "err");
+      }
+    }
+
+    $("btnLoadDaily").addEventListener("click", () => { nudgeCard(); loadDaily(); });
+    $("btnLoadHourly").addEventListener("click", () => { nudgeCard(); loadHourly(); });
+    $("btnLoadMonthly").addEventListener("click", () => { nudgeCard(); loadMonthly(); });
+
+    /* ===================== INIT ===================== */
     newMessage(true);
     updatePills();
 
@@ -675,10 +904,14 @@
     makeFlakes(120);
     startSnow();
 
-    updateLocalVisits();
     updateAudioUI();
     tryAutoplay();
+
+    setDefaultDates();
+    trackVisit();   // ✅ contador global real desde su API
+    loadDaily();    // ✅ carga inicial: últimos 14 días
   </script>
 </body>
 </html>
+
 
