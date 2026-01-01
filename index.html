@@ -7,27 +7,18 @@
 
   <style>
     :root{
-      --bg1:#041c2d;
-      --bg2:#0b4f7a;
-
+      --bg1:#041c2d; --bg2:#0b4f7a;
       --glass: rgba(255,255,255,.12);
       --stroke: rgba(255,255,255,.22);
       --shadow: 0 22px 70px rgba(0,0,0,.45);
-
       --txt: rgba(255,255,255,.96);
       --sub: rgba(255,255,255,.86);
       --muted: rgba(255,255,255,.72);
-
       --glowA: rgba(44,198,255,.40);
       --glowB: rgba(255,108,201,.26);
       --glowC: rgba(255,225,120,.18);
-
       --linkedin:#0A66C2;
       --radius: 28px;
-
-      --ok: rgba(88, 255, 160, .95);
-      --warn: rgba(255, 206, 84, .95);
-      --err: rgba(255, 90, 90, .95);
     }
 
     *{ box-sizing:border-box; }
@@ -41,7 +32,6 @@
       overflow:hidden;
     }
 
-    /* Fondo suave */
     .bg{
       position:fixed; inset:-60px;
       background:
@@ -52,27 +42,19 @@
       animation:bgMove 10s ease-in-out infinite alternate;
       filter:saturate(115%);
     }
-    @keyframes bgMove{
-      to{ transform:translate(-14px,8px) scale(1.02); }
-    }
+    @keyframes bgMove{ to{ transform:translate(-14px,8px) scale(1.02); } }
 
-    /* Nieve (Canvas) */
     #snowCanvas{
-      position:fixed;
-      inset:0;
-      width:100vw;
-      height:100vh;
-      z-index:0;
-      pointer-events:none;
+      position:fixed; inset:0;
+      width:100vw; height:100vh;
+      z-index:0; pointer-events:none;
       opacity:.95;
     }
 
     .wrap{
-      position:relative;
-      z-index:1;
+      position:relative; z-index:1;
       min-height:100vh;
-      display:grid;
-      place-items:center;
+      display:grid; place-items:center;
       padding:22px;
     }
 
@@ -88,14 +70,12 @@
       position:relative;
       overflow:hidden;
       animation: enter .7s cubic-bezier(.2,.8,.2,1) forwards;
-      transform: translateZ(0);
     }
     @keyframes enter{
       from{opacity:0; transform:translateY(14px) scale(.985)}
       to{opacity:1; transform:translateY(0) scale(1)}
     }
 
-    /* borde luminoso sutil */
     .card::before{
       content:"";
       position:absolute; inset:0;
@@ -109,7 +89,6 @@
       z-index:0;
     }
 
-    /* brillo que cruza */
     .sheen{
       position:absolute;
       inset:-40%;
@@ -136,16 +115,13 @@
     .card > *{ position:relative; z-index:2; }
 
     .toprow{
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
+      display:flex; justify-content:center;
+      gap:10px; flex-wrap:wrap;
       margin-bottom:12px;
     }
 
     .badge{
-      display:inline-flex;
-      align-items:center;
+      display:inline-flex; align-items:center;
       gap:10px;
       padding:8px 12px;
       border-radius:999px;
@@ -156,42 +132,14 @@
       user-select:none;
     }
 
-    .dot{
-      width:10px; height:10px;
-      border-radius:999px;
-      background: rgba(44,198,255,.95);
-      animation: pulse 1.6s ease-out infinite;
-      box-shadow: 0 0 0 rgba(44,198,255,.35);
-    }
-    .dot.ok{ background: var(--ok); }
-    .dot.warn{ background: var(--warn); }
-    .dot.err{ background: var(--err); }
-
-    @keyframes pulse{
-      0%   { box-shadow: 0 0 0 0 rgba(44,198,255,.35); }
-      70%  { box-shadow: 0 0 0 10px rgba(44,198,255,0); }
-      100% { box-shadow: 0 0 0 0 rgba(44,198,255,0); }
-    }
-
     .name{
-      font-size:32px;
-      font-weight:950;
+      font-size:32px; font-weight:950;
       margin:10px 0 6px;
       text-shadow: 0 10px 26px rgba(0,0,0,.35);
     }
-    .year{
-      font-size:14px;
-      letter-spacing:3px;
-      opacity:.85;
-      margin-bottom:18px;
-    }
+    .year{ font-size:14px; letter-spacing:3px; opacity:.85; margin-bottom:18px; }
 
-    h1{
-      font-size:clamp(28px,5vw,50px);
-      margin:10px 0 14px;
-      font-weight:950;
-      line-height:1.1;
-    }
+    h1{ font-size:clamp(28px,5vw,50px); margin:10px 0 14px; font-weight:950; line-height:1.1; }
 
     p{
       max-width:72ch;
@@ -209,53 +157,15 @@
       letter-spacing:.2px;
       text-shadow: 0 10px 26px rgba(0,0,0,.25);
     }
-    .cursor{
-      display:inline-block;
-      width:10px;
-      transform: translateY(1px);
-      margin-left:4px;
-      opacity:.9;
-      animation: blink .9s steps(2) infinite;
-    }
-    @keyframes blink{
-      0%, 49% { opacity: 1; }
-      50%, 100% { opacity: 0; }
-    }
-
-    .meta{
-      margin-top:18px;
-      display:flex;
-      justify-content:center;
-      gap:10px;
-      flex-wrap:wrap;
-      font-size:13px;
-      color:var(--muted);
-    }
-    .pill{
-      padding:9px 14px;
-      border-radius:999px;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.12);
-      transition: transform .15s ease, background .15s ease;
-      user-select:none;
-    }
-    .pill:hover{
-      transform: translateY(-1px);
-      background: rgba(0,0,0,.22);
-    }
 
     .actions{
       margin-top:26px;
-      display:flex;
-      justify-content:center;
-      gap:14px;
-      flex-wrap:wrap;
+      display:flex; justify-content:center;
+      gap:14px; flex-wrap:wrap;
     }
 
     .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
+      display:inline-flex; align-items:center; gap:10px;
       padding:13px 20px;
       border-radius:18px;
       font-weight:950;
@@ -265,15 +175,8 @@
       background: rgba(0,0,0,.18);
       color:var(--txt);
       transition:transform .15s ease, opacity .15s ease, box-shadow .15s ease, filter .15s ease;
-      will-change: transform;
     }
-    .btn:hover{
-      transform:translateY(-2px);
-      opacity:.97;
-      filter:saturate(120%);
-      box-shadow:0 16px 34px rgba(0,0,0,.28);
-    }
-    .btn:active{ transform:translateY(0); }
+    .btn:hover{ transform:translateY(-2px); opacity:.97; filter:saturate(120%); box-shadow:0 16px 34px rgba(0,0,0,.28); }
 
     .btn-linkedin{
       background:var(--linkedin);
@@ -291,33 +194,16 @@
       transition: transform .6s ease;
       opacity:.7;
     }
-    .btn-animate:hover::after{
-      transform: translateX(60%) rotate(12deg);
-    }
+    .btn-animate:hover::after{ transform: translateX(60%) rotate(12deg); }
 
-    .footer{
-      margin-top:22px;
-      font-size:13px;
-      color:var(--muted);
-    }
+    .footer{ margin-top:22px; font-size:13px; color:var(--muted); }
 
-    .shake{ animation: pop .22s ease; }
-    @keyframes pop{
-      0%{ transform: scale(1); }
-      60%{ transform: scale(1.012); }
-      100%{ transform: scale(1); }
-    }
-
-    /* Banner audio */
     .audioBanner{
       position:fixed;
-      left:16px;
-      right:16px;
-      bottom:16px;
+      left:16px; right:16px; bottom:16px;
       z-index:5;
       display:none;
-      justify-content:center;
-      align-items:center;
+      justify-content:center; align-items:center;
       gap:10px;
       padding:12px 14px;
       border-radius:18px;
@@ -327,89 +213,12 @@
       box-shadow: 0 18px 60px rgba(0,0,0,.35);
       color: var(--txt);
     }
-    .audioBanner .mini{
-      font-size:13px;
-      color: var(--sub);
-      opacity:.92;
-    }
-
-    /* Panel stats */
-    .stats{
-      margin-top:18px;
-      text-align:left;
-      max-width: 860px;
-      margin-left:auto;
-      margin-right:auto;
-      border-top:1px solid rgba(255,255,255,.12);
-      padding-top:16px;
-    }
-    .statsHead{
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:10px;
-    }
-    .statsTitle{
-      font-weight:950;
-      letter-spacing:.2px;
-      color: var(--txt);
-    }
-    .statsControls{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .input{
-      appearance:none;
-      border:1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-      color: var(--txt);
-      padding:10px 12px;
-      border-radius:14px;
-      outline:none;
-      font-weight:750;
-      font-size:13px;
-    }
-    .input::-webkit-calendar-picker-indicator{ filter: invert(1); opacity:.85; }
-
-    .chart{
-      height:140px;
-      display:flex;
-      align-items:flex-end;
-      gap:6px;
-      padding:12px;
-      border-radius:18px;
-      background: rgba(0,0,0,.12);
-      border:1px solid rgba(255,255,255,.10);
-      overflow:hidden;
-    }
-    .bar{
-      flex:1;
-      min-width: 6px;
-      border-radius: 12px 12px 8px 8px;
-      background: linear-gradient(180deg, rgba(44,198,255,.90), rgba(255,108,201,.55));
-      opacity:.9;
-      transform: translateZ(0);
-    }
-    .bar:hover{ opacity:1; filter:saturate(120%); }
-    .legend{
-      margin-top:10px;
-      font-size:13px;
-      color: var(--muted);
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-    }
+    .audioBanner .mini{ font-size:13px; color: var(--sub); opacity:.92; }
 
     @media (prefers-reduced-motion: reduce){
-      .bg,.sheen,.dot,.cursor{ animation:none !important; }
+      .bg,.sheen{ animation:none !important; }
       #snowCanvas{ display:none; }
-      .btn,.pill{ transition:none !important; }
+      .btn{ transition:none !important; }
     }
   </style>
 </head>
@@ -418,7 +227,7 @@
   <div class="bg"></div>
   <canvas id="snowCanvas" aria-hidden="true"></canvas>
 
-  <!-- Audio local (suba el MP3 a la raíz del repo: /visits/futuristic-beat-146661.mp3) -->
+  <!-- Audio local -->
   <audio id="bgMusic" preload="auto" loop>
     <source src="./futuristic-beat-146661.mp3" type="audio/mpeg" />
   </audio>
@@ -434,11 +243,7 @@
       <div class="sheen"></div>
 
       <div class="toprow">
-        <div class="badge">
-          <span class="dot" id="statusDot"></span>
-          <span id="statusText">Dinámico · activo</span>
-        </div>
-        <div class="badge" id="visitBadge">👁️ Visitas: <span id="visitCount">—</span></div>
+        <div class="badge">👁️ Visitas: <span id="visitCount">—</span></div>
         <div class="badge" id="audioState">🔇 Música: OFF</div>
       </div>
 
@@ -453,15 +258,7 @@
         un mensaje positivo en este año 2026.
       </p>
 
-      <div class="dynamic">
-        <span id="dynamicMsg"></span><span class="cursor">|</span>
-      </div>
-
-      <div class="meta">
-        <div class="pill" id="greetingPill">🕒 --</div>
-        <div class="pill" id="datePill">📅 --</div>
-        <div class="pill" id="hintPill">❄️ Nieve: ON</div>
-      </div>
+      <div class="dynamic" id="dynamicMsg"></div>
 
       <div class="actions">
         <a class="btn btn-linkedin btn-animate"
@@ -470,33 +267,13 @@
           💼 Ver perfil en LinkedIn
         </a>
 
-        <button class="btn btn-animate" id="btnNew" type="button">✨ Generar otro mensaje</button>
-        <button class="btn btn-animate" id="btnCopy" type="button">📋 Copiar mensaje</button>
-        <button class="btn btn-animate" id="btnMusic" type="button">🔊 Música: AUTO</button>
-      </div>
+        <a class="btn btn-animate" href="./stats.html">
+          📊 Ver estadísticas
+        </a>
 
-      <!-- ================== STATS (RANGO, HORA, MES) ================== -->
-      <div class="stats" id="stats">
-        <div class="statsHead">
-          <div class="statsTitle">📊 Estadísticas (desde su API)</div>
-          <div class="statsControls">
-            <input class="input" type="date" id="fromDate" />
-            <input class="input" type="date" id="toDate" />
-            <button class="btn btn-animate" id="btnLoadDaily" type="button">Ver por día</button>
-
-            <input class="input" type="date" id="hourlyDate" />
-            <button class="btn btn-animate" id="btnLoadHourly" type="button">Ver por hora</button>
-
-            <input class="input" type="number" min="2020" max="2100" id="yearInput" />
-            <button class="btn btn-animate" id="btnLoadMonthly" type="button">Ver por mes</button>
-          </div>
-        </div>
-
-        <div class="chart" id="chartBars" aria-label="Gráfica"></div>
-        <div class="legend">
-          <div id="legendLeft">—</div>
-          <div id="legendRight">—</div>
-        </div>
+        <button class="btn btn-animate" id="btnMusic" type="button">
+          🔊 Música: AUTO
+        </button>
       </div>
 
       <div class="footer">Mensaje personal compartido públicamente · Año 2026</div>
@@ -504,149 +281,37 @@
   </main>
 
   <script>
-    /* ===================== CONFIG API (IMPORTANTE) ===================== */
-    // Ajuste a su dominio real:
+    /* ===== CONFIG API ===== */
     const API_BASE = "https://api.systemblacklem.com";
-    // PageKey del contador:
-    const PAGE_KEY = "visits"; // o "dec-2026"
+    const PAGE_KEY = "visits";
 
-    // Endpoints esperados en su backend:
-    // GET  /api/public/visits/track?page=visits
-    // GET  /api/public/visits/stats/daily?page=visits&from=YYYY-MM-DD&to=YYYY-MM-DD
-    // GET  /api/public/visits/stats/hourly?page=visits&date=YYYY-MM-DD
-    // GET  /api/public/visits/stats/monthly?page=visits&year=YYYY
-    const ENDPOINTS = {
-      track:  `${API_BASE}/api/public/visits/track?page=${encodeURIComponent(PAGE_KEY)}`,
-      daily:  (from, to) => `${API_BASE}/api/public/visits/stats/daily?page=${encodeURIComponent(PAGE_KEY)}&from=${from}&to=${to}`,
-      hourly: (date)    => `${API_BASE}/api/public/visits/stats/hourly?page=${encodeURIComponent(PAGE_KEY)}&date=${date}`,
-      monthly:(year)    => `${API_BASE}/api/public/visits/stats/monthly?page=${encodeURIComponent(PAGE_KEY)}&year=${year}`,
-    };
+    const ENDPOINT_TRACK = `${API_BASE}/api/public/visits/track?page=${encodeURIComponent(PAGE_KEY)}`;
 
-    const MESSAGES = {
-      morning: [
-        "Que su mañana inicie con enfoque, calma y determinación.",
-        "Que hoy comience con energía positiva y propósito claro."
-      ],
-      afternoon: [
-        "Que su tarde continúe con constancia y buenos resultados.",
-        "Que cada paso de hoy le acerque a sus objetivos."
-      ],
-      evening: [
-        "Que su noche le brinde paz, descanso y claridad.",
-        "Que cierre el día con gratitud y serenidad."
-      ],
-      quotes: [
-        "“La constancia construye resultados duraderos.”",
-        "“Cada día es una oportunidad para avanzar.”",
-        "“La disciplina transforma objetivos en logros.”",
-        "“Que 2026 sea un año de crecimiento y claridad.”"
-      ]
-    };
+    /* ===== Mensaje dinámico simple ===== */
+    const MESSAGES = [
+      "Que cada paso de hoy le acerque a sus objetivos. “La disciplina transforma objetivos en logros.”",
+      "Que este año traiga enfoque y serenidad. “La constancia construye resultados duraderos.”",
+      "Que 2026 sea un año de crecimiento y claridad. “Cada día es una oportunidad para avanzar.”"
+    ];
 
-    const $ = (id) => document.getElementById(id);
-
-    function timeBand(h){
-      if (h >= 5 && h < 12) return "morning";
-      if (h >= 12 && h < 18) return "afternoon";
-      return "evening";
-    }
-    function greeting(){
-      const h = new Date().getHours();
-      if (h >= 5 && h < 12) return "🌤️ Buenos días";
-      if (h >= 12 && h < 18) return "☀️ Buenas tardes";
-      return "🌙 Buenas noches";
-    }
-    function formatDate(){
-      return new Date().toLocaleDateString("es-ES", {
-        weekday:"long", year:"numeric", month:"long", day:"numeric"
-      });
-    }
     function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
 
-    let typingTimer = null;
-    function typewriter(el, text, speed = 16){
-      clearInterval(typingTimer);
-      el.textContent = "";
-      let i = 0;
-      typingTimer = setInterval(() => {
-        el.textContent += text[i] ?? "";
-        i++;
-        if (i >= text.length) clearInterval(typingTimer);
-      }, speed);
-    }
+    document.getElementById("dynamicMsg").textContent = pick(MESSAGES);
 
-    function updatePills(){
-      $("greetingPill").textContent = greeting();
-      $("datePill").textContent = "📅 " + formatDate();
-    }
-
-    function newMessage(animate = true){
-      const now = new Date();
-      const band = timeBand(now.getHours());
-      const msg = pick(MESSAGES[band]) + " " + pick(MESSAGES.quotes);
-
-      const el = $("dynamicMsg");
-      if (animate) typewriter(el, msg, 16);
-      else el.textContent = msg;
-
-      updatePills();
-    }
-
-    function nudgeCard(){
-      const card = $("card");
-      card.classList.remove("shake");
-      void card.offsetWidth;
-      card.classList.add("shake");
-    }
-
-    $("btnNew").addEventListener("click", () => { nudgeCard(); newMessage(true); });
-    $("btnCopy").addEventListener("click", async () => {
-      const text = $("dynamicMsg").textContent.trim();
-      try{
-        await navigator.clipboard.writeText(text);
-        setStatus("Copiado ✓", "ok");
-      }catch(e){
-        setStatus("No se pudo copiar", "err");
-      }
-      setTimeout(() => setStatus("Dinámico · activo", "info"), 1400);
-    });
-
-    window.addEventListener("keydown", (ev) => {
-      if (ev.code === "Space"){
-        ev.preventDefault();
-        nudgeCard();
-        newMessage(true);
-      }
-    });
-
-    /* ===================== ESTADO UI ===================== */
-    function setStatus(text, level){
-      $("statusText").textContent = text;
-
-      const dot = $("statusDot");
-      dot.classList.remove("ok","warn","err");
-      if (level === "ok") dot.classList.add("ok");
-      else if (level === "warn") dot.classList.add("warn");
-      else if (level === "err") dot.classList.add("err");
-      else { /* info: color base */ }
-    }
-
-    /* ===================== NIEVE (Canvas) ===================== */
-    const canvas = $("snowCanvas");
+    /* ===== Nieve (Canvas) ===== */
+    const canvas = document.getElementById("snowCanvas");
     const ctx = canvas.getContext("2d", { alpha:true });
     let flakes = [];
-    let snowRAF = null;
+    let raf = null;
 
-    function resizeSnow(){
+    function resize(){
       canvas.width  = Math.floor(window.innerWidth  * devicePixelRatio);
       canvas.height = Math.floor(window.innerHeight * devicePixelRatio);
-      canvas.style.width = "100vw";
-      canvas.style.height = "100vh";
       ctx.setTransform(1,0,0,1,0,0);
       ctx.scale(devicePixelRatio, devicePixelRatio);
     }
 
-    function makeFlakes(count = 120){
+    function initFlakes(count = 120){
       flakes = Array.from({ length: count }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
@@ -659,7 +324,7 @@
       }));
     }
 
-    function drawSnow(){
+    function draw(){
       ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
       for (const f of flakes){
         f.wob += f.woSpeed;
@@ -675,35 +340,20 @@
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
         ctx.fill();
       }
-      snowRAF = requestAnimationFrame(drawSnow);
+      raf = requestAnimationFrame(draw);
     }
 
-    function startSnow(){
-      if (snowRAF) return;
-      drawSnow();
-    }
-    function stopSnow(){
-      if (!snowRAF) return;
-      cancelAnimationFrame(snowRAF);
-      snowRAF = null;
-      ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
-    }
+    window.addEventListener("resize", () => { resize(); initFlakes(120); });
 
-    document.addEventListener("visibilitychange", () => {
-      if (document.hidden) stopSnow();
-      else startSnow();
-    });
+    resize();
+    initFlakes(120);
+    draw();
 
-    window.addEventListener("resize", () => {
-      resizeSnow();
-      makeFlakes(120);
-    });
-
-    /* ===================== MÚSICA (autoplay controlado) ===================== */
-    const audio = $("bgMusic");
-    const btnMusic = $("btnMusic");
-    const audioState = $("audioState");
-    const banner = $("audioBanner");
+    /* ===== Música: autoplay con fallback ===== */
+    const audio = document.getElementById("bgMusic");
+    const btnMusic = document.getElementById("btnMusic");
+    const audioState = document.getElementById("audioState");
+    const banner = document.getElementById("audioBanner");
 
     let musicState = "AUTO"; // AUTO | ON | OFF
 
@@ -721,13 +371,12 @@
     }
 
     async function tryAutoplay(){
-      if (!audio) return;
       audio.volume = 0.65;
       try{
         await audio.play();
         musicState = "ON";
         banner.style.display = "none";
-      }catch(e){
+      }catch{
         musicState = "AUTO";
         banner.style.display = "flex";
       }
@@ -735,7 +384,6 @@
     }
 
     function stopMusic(){
-      if (!audio) return;
       audio.pause();
       audio.currentTime = 0;
       musicState = "OFF";
@@ -744,25 +392,23 @@
     }
 
     async function startMusicByUser(){
-      if (!audio) return;
       try{
         await audio.play();
         musicState = "ON";
         banner.style.display = "none";
-      }catch(e){
+      }catch{
         banner.style.display = "flex";
       }
       updateAudioUI();
     }
 
     btnMusic.addEventListener("click", () => {
-      nudgeCard();
       if (musicState === "ON") stopMusic();
       else startMusicByUser();
     });
 
-    $("btnEnableAudio").addEventListener("click", () => { nudgeCard(); startMusicByUser(); });
-    $("btnDismissAudio").addEventListener("click", () => { stopMusic(); });
+    document.getElementById("btnEnableAudio").addEventListener("click", startMusicByUser);
+    document.getElementById("btnDismissAudio").addEventListener("click", stopMusic);
 
     function userGestureKick(){
       if (musicState === "AUTO") startMusicByUser();
@@ -772,146 +418,22 @@
     window.addEventListener("pointerdown", userGestureKick);
     window.addEventListener("keydown", userGestureKick);
 
-    /* ===================== TRACK VISIT + STATS (API REAL) ===================== */
-    async function fetchJson(url){
-      const res = await fetch(url, { method: "GET" });
-      if (!res.ok) {
-        const txt = await res.text().catch(() => "");
-        throw new Error(`HTTP ${res.status} ${txt}`);
-      }
-      return res.json();
-    }
-
-    async function trackVisit(){
-      try{
-        const data = await fetchJson(ENDPOINTS.track);
-        $("visitCount").textContent = String(data.total ?? "—");
-        setStatus("Contador global · OK", "ok");
-      }catch(e){
-        // Si falla API, no invente número (mejor mostrar estado real)
-        $("visitCount").textContent = "—";
-        setStatus("API no disponible (contador)", "warn");
-      }
-    }
-
-    function setDefaultDates(){
-      const today = new Date();
-      const yyyy = today.getFullYear();
-      const mm = String(today.getMonth() + 1).padStart(2, "0");
-      const dd = String(today.getDate()).padStart(2, "0");
-      const iso = `${yyyy}-${mm}-${dd}`;
-
-      $("hourlyDate").value = iso;
-      $("yearInput").value = String(yyyy);
-
-      // rango: últimos 14 días
-      const from = new Date(today.getTime() - 13 * 24 * 60 * 60 * 1000);
-      const fyyyy = from.getFullYear();
-      const fmm = String(from.getMonth() + 1).padStart(2, "0");
-      const fdd = String(from.getDate()).padStart(2, "0");
-      $("fromDate").value = `${fyyyy}-${fmm}-${fdd}`;
-      $("toDate").value = iso;
-    }
-
-    function renderBars(points, titleLeft, titleRight){
-      const container = $("chartBars");
-      container.innerHTML = "";
-
-      if (!points || points.length === 0){
-        $("legendLeft").textContent = titleLeft;
-        $("legendRight").textContent = "Sin datos";
-        return;
-      }
-
-      const max = Math.max(...points.map(p => Number(p.value || 0)), 1);
-      for (const p of points){
-        const bar = document.createElement("div");
-        bar.className = "bar";
-        const val = Number(p.value || 0);
-        const h = Math.max(6, Math.round((val / max) * 120));
-        bar.style.height = `${h}px`;
-        bar.title = `${p.key}: ${val}`;
-        container.appendChild(bar);
-      }
-
-      const sum = points.reduce((a, p) => a + Number(p.value || 0), 0);
-      $("legendLeft").textContent = titleLeft;
-      $("legendRight").textContent = `${titleRight} · Total: ${sum}`;
-    }
-
-    async function loadDaily(){
-      const from = $("fromDate").value;
-      const to = $("toDate").value;
-      if (!from || !to){
-        setStatus("Seleccione rango de fechas", "warn");
-        return;
-      }
-
-      try{
-        const data = await fetchJson(ENDPOINTS.daily(from, to));
-        renderBars(data, `Por día (${from} a ${to})`, "Vistas");
-        setStatus("Stats diarios · OK", "ok");
-      }catch(e){
-        renderBars([], `Por día (${from} a ${to})`, "Error");
-        setStatus("Error al cargar stats diarios", "err");
-      }
-    }
-
-    async function loadHourly(){
-      const date = $("hourlyDate").value;
-      if (!date){
-        setStatus("Seleccione una fecha", "warn");
-        return;
-      }
-
-      try{
-        const data = await fetchJson(ENDPOINTS.hourly(date));
-        renderBars(data, `Por hora (${date} UTC)`, "Vistas");
-        setStatus("Stats por hora · OK", "ok");
-      }catch(e){
-        renderBars([], `Por hora (${date})`, "Error");
-        setStatus("Error al cargar stats por hora", "err");
-      }
-    }
-
-    async function loadMonthly(){
-      const year = $("yearInput").value;
-      const y = Number(year);
-      if (!y || y < 2000 || y > 2100){
-        setStatus("Año inválido", "warn");
-        return;
-      }
-
-      try{
-        const data = await fetchJson(ENDPOINTS.monthly(y));
-        renderBars(data, `Por mes (${y})`, "Vistas");
-        setStatus("Stats mensual · OK", "ok");
-      }catch(e){
-        renderBars([], `Por mes (${y})`, "Error");
-        setStatus("Error al cargar stats mensual", "err");
-      }
-    }
-
-    $("btnLoadDaily").addEventListener("click", () => { nudgeCard(); loadDaily(); });
-    $("btnLoadHourly").addEventListener("click", () => { nudgeCard(); loadHourly(); });
-    $("btnLoadMonthly").addEventListener("click", () => { nudgeCard(); loadMonthly(); });
-
-    /* ===================== INIT ===================== */
-    newMessage(true);
-    updatePills();
-
-    resizeSnow();
-    makeFlakes(120);
-    startSnow();
-
-    updateAudioUI();
     tryAutoplay();
 
-    setDefaultDates();
-    trackVisit();   // ✅ contador global real desde su API
-    loadDaily();    // ✅ carga inicial: últimos 14 días
+    /* ===== Track visitas (contador real desde backend) ===== */
+    async function track(){
+      try{
+        const res = await fetch(ENDPOINT_TRACK, { method:"GET" });
+        const data = await res.json();
+        document.getElementById("visitCount").textContent = String(data.total ?? "—");
+      }catch{
+        document.getElementById("visitCount").textContent = "—";
+      }
+    }
+    track();
   </script>
 </body>
 </html>
+
 
 
