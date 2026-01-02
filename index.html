@@ -3,60 +3,83 @@
 <head>
   <meta charset="utf-8" />
   <title>Alberto Lem · 2026</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <!-- Open Graph / WhatsApp / Twitter -->
   <meta property="og:title" content="Alberto Lem · 2026" />
-  <meta property="og:description" content="Mensaje 2026 + contador de visitas en tiempo real." />
+  <meta property="og:description" content="Mensaje 2026." />
   <meta property="og:url" content="https://alberto-lem.github.io/visits/" />
   <meta property="og:image" content="https://alberto-lem.github.io/visits/cover.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
   <style>
     :root{
-      --bg1:#041c2d; --bg2:#0b4f7a;
-      --glass: rgba(255,255,255,.12);
-      --stroke: rgba(255,255,255,.22);
-      --shadow: 0 22px 70px rgba(0,0,0,.45);
+      /* Futurista: azul profundo + cian neón + magenta suave */
+      --bg0:#030A12;
+      --bg1:#041c2d;
+      --bg2:#0b4f7a;
+
+      --glass: rgba(255,255,255,.10);
+      --glass2: rgba(10, 18, 28, .35);
+      --stroke: rgba(255,255,255,.18);
 
       --txt: rgba(255,255,255,.96);
-      --sub: rgba(255,255,255,.86);
-      --muted: rgba(255,255,255,.72);
+      --sub: rgba(255,255,255,.84);
+      --muted: rgba(255,255,255,.70);
 
-      --glowA: rgba(44,198,255,.40);
-      --glowB: rgba(255,108,201,.22);
-      --glowC: rgba(255,225,120,.16);
+      --neonA: rgba(44,198,255,.52);
+      --neonB: rgba(255,108,201,.28);
+      --neonC: rgba(145,255,190,.16);
+
+      --shadow: 0 22px 70px rgba(0,0,0,.52);
+      --radius: 28px;
 
       --linkedin:#0A66C2;
-      --radius: 30px;
+
+      /* Tamaños adaptables */
+      --pad: clamp(16px, 3.2vw, 28px);
+      --gap: clamp(10px, 2.4vw, 16px);
     }
 
     *{ box-sizing:border-box; }
     html,body{ height:100%; }
-
     body{
       margin:0;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       color:var(--txt);
-      background:var(--bg1);
+      background: var(--bg0);
       overflow:hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
     }
 
-    /* Fondo */
+    /* Fondo futurista con movimiento sutil */
     .bg{
       position:fixed; inset:-60px;
       background:
-        radial-gradient(900px 520px at 15% 18%, var(--glowA), transparent 70%),
-        radial-gradient(820px 540px at 85% 20%, var(--glowB), transparent 70%),
-        radial-gradient(1100px 680px at 50% 92%, var(--glowC), transparent 70%),
-        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 70%);
+        radial-gradient(900px 520px at 18% 18%, var(--neonA), transparent 70%),
+        radial-gradient(820px 540px at 86% 22%, var(--neonB), transparent 70%),
+        radial-gradient(1100px 680px at 50% 95%, var(--neonC), transparent 70%),
+        linear-gradient(180deg, var(--bg2) 0%, var(--bg1) 55%, var(--bg0) 100%);
       animation:bgMove 10s ease-in-out infinite alternate;
-      filter:saturate(115%);
+      filter:saturate(118%) contrast(104%);
     }
     @keyframes bgMove{ to{ transform:translate(-14px,8px) scale(1.02); } }
 
-    /* Nieve */
-    #snowCanvas{
+    /* Capa de grilla futurista (muy sutil) */
+    .gridOverlay{
+      position:fixed; inset:0;
+      background:
+        linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px);
+      background-size: 64px 64px;
+      opacity:.06;
+      pointer-events:none;
+      mask-image: radial-gradient(circle at 50% 30%, black 0%, transparent 68%);
+    }
+
+    /* Partículas (estrellas/nieve) */
+    #fxCanvas{
       position:fixed; inset:0;
       width:100vw; height:100vh;
       z-index:0; pointer-events:none;
@@ -66,29 +89,34 @@
     .wrap{
       position:relative; z-index:1;
       min-height:100vh;
-      display:grid; place-items:center;
-      padding:22px;
+      display:grid;
+      place-items:center;
+      padding: var(--pad);
+      padding-top: calc(var(--pad) + env(safe-area-inset-top));
+      padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom));
     }
 
+    /* Contenedor responsivo: en móvil más compacto, en desktop más amplio */
     .card{
-      width:min(980px, 95vw);
-      padding:46px 38px;
-      border-radius:var(--radius);
-      background:var(--glass);
-      border:1px solid var(--stroke);
-      backdrop-filter: blur(14px);
-      box-shadow:var(--shadow);
+      width: min(980px, 100%);
+      padding: clamp(18px, 3.8vw, 44px);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.07));
+      border: 1px solid var(--stroke);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: var(--shadow);
       text-align:center;
       position:relative;
       overflow:hidden;
-      animation: enter .7s cubic-bezier(.2,.8,.2,1) forwards;
+      animation: enter .7s cubic-bezier(.2,.8,.2,1) both;
     }
     @keyframes enter{
       from{opacity:0; transform:translateY(14px) scale(.985)}
       to{opacity:1; transform:translateY(0) scale(1)}
     }
 
-    /* Halo */
+    /* Halo + borde neón */
     .card::before{
       content:"";
       position:absolute; inset:0;
@@ -96,64 +124,67 @@
       pointer-events:none;
       box-shadow:
         inset 0 0 0 1px rgba(255,255,255,.14),
-        0 0 44px rgba(44,198,255,.10),
+        0 0 44px rgba(44,198,255,.12),
         0 0 70px rgba(255,108,201,.08);
       opacity:.95;
       z-index:0;
     }
 
-    /* Brillo sutil */
+    /* Brillo diagonal */
     .sheen{
       position:absolute;
-      inset:-40%;
+      inset:-55%;
       background: linear-gradient(120deg,
-        transparent 35%,
-        rgba(255,255,255,.10) 45%,
-        rgba(255,255,255,.16) 50%,
-        rgba(255,255,255,.10) 55%,
-        transparent 65%
+        transparent 36%,
+        rgba(255,255,255,.10) 46%,
+        rgba(255,255,255,.18) 50%,
+        rgba(255,255,255,.10) 54%,
+        transparent 64%
       );
-      transform: translateX(-40%) rotate(10deg);
+      transform: translateX(-45%) rotate(10deg);
       animation: sheenMove 7.8s ease-in-out infinite;
       pointer-events:none;
       opacity:.55;
       z-index:1;
     }
     @keyframes sheenMove{
-      0%   { transform: translateX(-55%) rotate(10deg); opacity:.10; }
+      0%   { transform: translateX(-60%) rotate(10deg); opacity:.10; }
       35%  { opacity:.55; }
       65%  { opacity:.55; }
-      100% { transform: translateX(55%) rotate(10deg); opacity:.10; }
+      100% { transform: translateX(60%) rotate(10deg); opacity:.10; }
     }
 
     .card > *{ position:relative; z-index:2; }
 
+    /* Top badges: en móvil se apilan bien */
     .toprow{
       display:flex;
       justify-content:center;
-      gap:10px;
+      gap: var(--gap);
       flex-wrap:wrap;
-      margin-bottom:14px;
+      margin-bottom: 14px;
     }
-
     .badge{
       display:inline-flex;
       align-items:center;
       gap:10px;
-      padding:9px 12px;
+      padding:10px 12px;
       border-radius:999px;
-      background:rgba(0,0,0,.18);
-      border:1px solid rgba(255,255,255,.14);
-      color:var(--muted);
-      font-size:13px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.14);
+      color: var(--muted);
+      font-size: 13px;
       user-select:none;
+      max-width: 100%;
     }
+    .badge b{ color: var(--txt); }
 
     .dot{
       width:10px; height:10px; border-radius:999px;
       background: rgba(44,198,255,.95);
       animation: pulse 1.6s ease-out infinite;
       box-shadow: 0 0 0 rgba(44,198,255,.35);
+      flex: 0 0 auto;
     }
     @keyframes pulse{
       0%   { box-shadow: 0 0 0 0 rgba(44,198,255,.35); }
@@ -161,76 +192,100 @@
       100% { box-shadow: 0 0 0 0 rgba(44,198,255,0); }
     }
 
+    /* Encabezado */
     .name{
-      font-size:34px;
-      font-weight:950;
-      margin:10px 0 6px;
+      font-size: clamp(22px, 4.2vw, 34px);
+      font-weight: 950;
+      margin: 8px 0 6px;
       letter-spacing:.2px;
       text-shadow: 0 10px 26px rgba(0,0,0,.35);
     }
     .year{
-      font-size:14px;
-      letter-spacing:3px;
-      opacity:.85;
-      margin-bottom:20px;
+      font-size: 12px;
+      letter-spacing: 3.2px;
+      opacity:.90;
+      margin-bottom: 18px;
+      text-transform: uppercase;
     }
 
     h1{
-      font-size:clamp(30px,5vw,52px);
-      margin:6px 0 12px;
-      font-weight:980;
-      line-height:1.08;
+      font-size: clamp(26px, 5.5vw, 52px);
+      margin: 8px 0 12px;
+      font-weight: 980;
+      line-height: 1.06;
     }
 
     p{
-      max-width:74ch;
-      margin:0 auto 18px;
-      font-size:clamp(15px,2.35vw,18px);
-      line-height:1.68;
-      color:var(--sub);
+      max-width: 72ch;
+      margin: 0 auto 16px;
+      font-size: clamp(15px, 2.35vw, 18px);
+      line-height: 1.70;
+      color: var(--sub);
     }
 
+    /* Mensaje dinámico (tipo “pantalla” moderna) */
+    .dynamicWrap{
+      margin: 18px auto 0;
+      max-width: 74ch;
+      background: rgba(0,0,0,.16);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 14px 14px;
+      box-shadow: 0 12px 30px rgba(0,0,0,.20);
+    }
     .dynamic{
-      margin-top:18px;
-      font-size:clamp(16px,2.6vw,20px);
-      font-weight:950;
-      min-height:2.8em;
-      letter-spacing:.2px;
+      font-size: clamp(16px, 2.8vw, 20px);
+      font-weight: 950;
+      letter-spacing:.15px;
+      min-height: 2.8em;
       text-shadow: 0 10px 26px rgba(0,0,0,.25);
+      margin:0;
+    }
+    .hint{
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+      opacity:.95;
     }
 
+    /* Acciones: en móvil pasan a 1 columna si no cabe */
     .actions{
-      margin-top:26px;
-      display:flex;
-      justify-content:center;
-      gap:14px;
-      flex-wrap:wrap;
+      margin-top: 22px;
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      align-items:stretch;
     }
 
     .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:13px 20px;
-      border-radius:18px;
-      font-weight:950;
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      gap: 10px;
+      padding: 14px 14px;
+      border-radius: 18px;
+      font-weight: 950;
       text-decoration:none;
       cursor:pointer;
-      border:1px solid rgba(255,255,255,.22);
+      border: 1px solid rgba(255,255,255,.20);
       background: rgba(0,0,0,.18);
-      color:var(--txt);
-      transition:transform .15s ease, opacity .15s ease, box-shadow .15s ease, filter .15s ease;
+      color: var(--txt);
+      transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease, filter .15s ease;
+      min-height: 48px; /* táctil */
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:hover{
-      transform:translateY(-2px);
-      opacity:.97;
-      filter:saturate(120%);
-      box-shadow:0 16px 34px rgba(0,0,0,.28);
+      transform: translateY(-2px);
+      opacity: .98;
+      filter: saturate(120%);
+      box-shadow: 0 16px 34px rgba(0,0,0,.28);
     }
-    .btn:active{ transform:translateY(0); }
+    .btn:active{ transform: translateY(0); }
 
     .btn-linkedin{
-      background:var(--linkedin);
+      background: linear-gradient(180deg, rgba(10,102,194,1), rgba(10,102,194,.88));
       color:#fff;
-      border-color: rgba(255,255,255,.18);
+      border-color: rgba(255,255,255,.16);
     }
 
     .btn-animate{ position:relative; overflow:hidden; }
@@ -238,7 +293,7 @@
       content:"";
       position:absolute;
       inset:-40% -30%;
-      background: linear-gradient(120deg, transparent, rgba(255,255,255,.22), transparent);
+      background: linear-gradient(120deg, transparent, rgba(255,255,255,.24), transparent);
       transform: translateX(-60%) rotate(12deg);
       transition: transform .6s ease;
       opacity:.65;
@@ -246,36 +301,64 @@
     .btn-animate:hover::after{ transform: translateX(60%) rotate(12deg); }
 
     .footer{
-      margin-top:22px;
-      font-size:13px;
-      color:var(--muted);
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      opacity:.92;
     }
 
-    /* Banner audio */
+    /* Banner audio: más limpio y móvil-friendly */
     .audioBanner{
       position:fixed;
-      left:16px; right:16px; bottom:16px;
+      left:12px; right:12px; bottom:12px;
       z-index:5;
       display:none;
-      justify-content:center; align-items:center;
-      gap:10px;
-      padding:12px 14px;
-      border-radius:18px;
-      background: rgba(0,0,0,.45);
+      gap: 10px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.50);
       border: 1px solid rgba(255,255,255,.18);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       box-shadow: 0 18px 60px rgba(0,0,0,.35);
       color: var(--txt);
+      align-items:center;
     }
     .audioBanner .mini{
-      font-size:13px;
+      font-size: 13px;
       color: var(--sub);
       opacity:.92;
+      flex: 1 1 auto;
+      text-align:left;
+    }
+    .audioBanner .rowBtns{
+      display:flex;
+      gap:10px;
+      flex: 0 0 auto;
+    }
+    .audioBanner .btn{ min-height: 42px; padding: 10px 12px; border-radius: 14px; }
+
+    /* Ajustes fuertes para smartphones */
+    @media (max-width: 720px){
+      body{ overflow:auto; } /* permite scroll si el teclado aparece */
+      .wrap{ min-height: 100svh; } /* mejor en móviles modernos */
+      .card{ padding: clamp(16px, 4.2vw, 26px); }
+      .actions{
+        grid-template-columns: 1fr;
+      }
+      .badge{ font-size: 12.5px; padding: 9px 11px; }
+      .audioBanner{
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .audioBanner .mini{ text-align:center; }
+      .audioBanner .rowBtns{ justify-content:center; width:100%; }
+      .audioBanner .rowBtns .btn{ width: 100%; }
     }
 
     @media (prefers-reduced-motion: reduce){
       .bg,.sheen,.dot{ animation:none !important; }
-      #snowCanvas{ display:none; }
+      #fxCanvas{ display:none; }
       .btn{ transition:none !important; }
     }
   </style>
@@ -283,17 +366,20 @@
 
 <body>
   <div class="bg"></div>
-  <canvas id="snowCanvas" aria-hidden="true"></canvas>
+  <div class="gridOverlay" aria-hidden="true"></div>
+  <canvas id="fxCanvas" aria-hidden="true"></canvas>
 
   <!-- Audio local -->
   <audio id="bgMusic" preload="auto" loop>
     <source src="./futuristic-beat-146661.mp3" type="audio/mpeg" />
   </audio>
 
-  <div class="audioBanner" id="audioBanner">
+  <div class="audioBanner" id="audioBanner" role="dialog" aria-live="polite">
     <div class="mini">🔊 El navegador bloqueó el audio automático. Presione para activarlo.</div>
-    <button class="btn btn-animate" id="btnEnableAudio" type="button">Activar audio</button>
-    <button class="btn btn-animate" id="btnDismissAudio" type="button">Cerrar</button>
+    <div class="rowBtns">
+      <button class="btn btn-animate" id="btnEnableAudio" type="button">Activar audio</button>
+      <button class="btn btn-animate" id="btnDismissAudio" type="button">Cerrar</button>
+    </div>
   </div>
 
   <main class="wrap">
@@ -310,23 +396,26 @@
       </div>
 
       <div class="name">Alberto Lem</div>
-      <div class="year">2026</div>
+      <div class="year">Mensaje · 2026</div>
 
       <h1>✨ Le desea</h1>
 
       <p>
         Que este nuevo ciclo esté lleno de salud, claridad, motivación y oportunidades.
         Reciba este mensaje con aprecio y compártalo con quien considere que pueda necesitar
-        un mensaje positivo en este año 2026.
+        una palabra positiva en este año 2026.
       </p>
 
-      <div class="dynamic" id="dynamicMsg"></div>
+      <div class="dynamicWrap" aria-live="polite">
+        <p class="dynamic" id="dynamicMsg"></p>
+        <div class="hint">Toque “Nuevo mensaje” para actualizar el saludo.</div>
+      </div>
 
       <div class="actions">
         <a class="btn btn-linkedin btn-animate"
            href="https://www.linkedin.com/in/alberto-lem?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app"
            target="_blank" rel="noopener">
-          💼 Ver perfil en LinkedIn
+          💼 LinkedIn
         </a>
 
         <button class="btn btn-animate" id="btnRefresh" type="button">
@@ -343,83 +432,128 @@
   </main>
 
   <script>
-    /* ===== CONFIG API ===== */
+    /* =========================
+       CONFIG API (contador)
+       ========================= */
     const API_BASE = "https://api.systemblacklem.com";
     const PAGE_KEY = "visits";
     const ENDPOINT_TRACK = `${API_BASE}/api/public/visits/track?page=${encodeURIComponent(PAGE_KEY)}`;
 
-    /* ===== Mensajes ===== */
+    /* =========================
+       Mensajes
+       ========================= */
     const MESSAGES = [
-      "Que cada paso de hoy le acerque a sus objetivos. “La disciplina transforma objetivos en logros.”",
-      "Que este año traiga enfoque y serenidad. “La constancia construye resultados duraderos.”",
-      "Que 2026 sea un año de crecimiento y claridad. “Cada día es una oportunidad para avanzar.”",
-      "Que la paz y la determinación le acompañen. “La constancia hace la diferencia.”"
+      "Que cada paso que dé hoy le acerque, con calma y confianza, a aquello que desea construir.",
+      "Que este año le regale serenidad para pensar con claridad y fuerza para seguir adelante.",
+      "Que 2026 le encuentre con esperanza, y le despida con satisfacción por lo logrado.",
+      "Que la paz acompañe sus decisiones y la determinación sostenga sus sueños.",
+      "Que cada decisión tomada con honestidad fortalezca su camino.",
+      "Que este nuevo ciclo le brinde equilibrio, propósito y momentos de verdadera tranquilidad.",
+      "Que la claridad guíe sus pensamientos y la constancia respalde sus acciones.",
+      "Que cada amanecer le recuerde que siempre es posible mejorar.",
+      "Que el esfuerzo silencioso de hoy se convierta en la recompensa de mañana.",
+      "Que la perseverancia le ayude a alcanzar resultados firmes y duraderos.",
+      "Que 2026 le reciba con orden interior, visión clara y fortaleza emocional.",
+      "Que la serenidad le permita elegir con sabiduría, incluso en momentos difíciles.",
+      "Que el compromiso diario consigo mismo dé frutos reales.",
+      "Que cada reto le deje una lección valiosa y una nueva perspectiva.",
+      "Que la disciplina sea un apoyo, no una carga.",
+      "Que el enfoque le ayude a avanzar sin perder lo verdaderamente importante.",
+      "Que la constancia marque, paso a paso, la diferencia en su vida.",
+      "Que el progreso llegue sin prisa, pero con firmeza.",
+      "Que la paciencia fortalezca cada proceso que hoy inicia.",
+      "Que el equilibrio le acompañe en cada etapa de su camino."
     ];
+
     function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+    const dynamicEl = document.getElementById("dynamicMsg");
     function newMessage(){
-      document.getElementById("dynamicMsg").textContent = pick(MESSAGES);
+      dynamicEl.textContent = pick(MESSAGES);
     }
-    document.getElementById("btnRefresh").addEventListener("click", newMessage);
+
+    const btnRefresh = document.getElementById("btnRefresh");
+    btnRefresh.addEventListener("click", () => {
+      newMessage();
+      // micro vibración en móviles (si está disponible)
+      if (navigator.vibrate) navigator.vibrate(18);
+    });
+
     newMessage();
 
-    /* ===== Nieve (Canvas) - optimizada ===== */
-    const canvas = document.getElementById("snowCanvas");
+    /* =========================
+       FX Canvas (estrellas/nieve)
+       - Adaptativo a rendimiento y tamaño
+       ========================= */
+    const canvas = document.getElementById("fxCanvas");
     const ctx = canvas.getContext("2d", { alpha:true });
-    let flakes = [];
+
+    let dots = [];
     let raf = null;
 
+    function getDpr(){ return Math.min(2, window.devicePixelRatio || 1); }
+
     function resize(){
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const dpr = getDpr();
       canvas.width  = Math.floor(window.innerWidth  * dpr);
       canvas.height = Math.floor(window.innerHeight * dpr);
       ctx.setTransform(1,0,0,1,0,0);
       ctx.scale(dpr, dpr);
     }
 
-    function initFlakes(){
-      const base = Math.min(140, Math.max(80, Math.floor(window.innerWidth / 10)));
-      flakes = Array.from({ length: base }, () => ({
+    function density(){
+      // menos partículas en móvil / pantallas pequeñas
+      const w = window.innerWidth;
+      const base = Math.floor(w / 10); // escalable
+      return Math.max(70, Math.min(160, base));
+    }
+
+    function initDots(){
+      const n = density();
+      dots = Array.from({ length:n }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
-        r: 0.9 + Math.random() * 2.1,
-        vy: 0.7 + Math.random() * 1.9,
-        vx: -0.25 + Math.random() * 0.5,
+        r: 0.7 + Math.random() * 1.9,
+        vy: 0.45 + Math.random() * 1.55,
+        vx: -0.18 + Math.random() * 0.36,
         wob: Math.random() * Math.PI * 2,
-        woSpeed: 0.006 + Math.random() * 0.012,
-        a: 0.22 + Math.random() * 0.55
+        woSpeed: 0.004 + Math.random() * 0.010,
+        a: 0.18 + Math.random() * 0.55
       }));
     }
 
     function draw(){
       ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
-      for (const f of flakes){
-        f.wob += f.woSpeed;
-        f.x += f.vx + Math.sin(f.wob) * 0.35;
-        f.y += f.vy;
+      for (const d of dots){
+        d.wob += d.woSpeed;
+        d.x += d.vx + Math.sin(d.wob) * 0.28;
+        d.y += d.vy;
 
-        if (f.y > window.innerHeight + 10) { f.y = -10; f.x = Math.random() * window.innerWidth; }
-        if (f.x < -10) f.x = window.innerWidth + 10;
-        if (f.x > window.innerWidth + 10) f.x = -10;
+        if (d.y > window.innerHeight + 10) { d.y = -10; d.x = Math.random() * window.innerWidth; }
+        if (d.x < -10) d.x = window.innerWidth + 10;
+        if (d.x > window.innerWidth + 10) d.x = -10;
 
         ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${f.a})`;
-        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${d.a})`;
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
         ctx.fill();
       }
       raf = requestAnimationFrame(draw);
     }
 
-    window.addEventListener("resize", () => { resize(); initFlakes(); });
+    window.addEventListener("resize", () => { resize(); initDots(); });
     document.addEventListener("visibilitychange", () => {
       if (document.hidden && raf){ cancelAnimationFrame(raf); raf=null; }
       if (!document.hidden && !raf){ draw(); }
     });
 
     resize();
-    initFlakes();
+    initDots();
     draw();
 
-    /* ===== Música: autoplay + fallback ===== */
+    /* =========================
+       Música: autoplay + fallback
+       ========================= */
     const audio = document.getElementById("bgMusic");
     const btnMusic = document.getElementById("btnMusic");
     const audioState = document.getElementById("audioState");
@@ -465,6 +599,8 @@
       try{
         await audio.play();
         musicState = "ON";
+        banner.style.display = "flex";
+        // si ya pudo reproducir, ocultar banner
         banner.style.display = "none";
       }catch{
         banner.style.display = "flex";
@@ -485,13 +621,15 @@
       window.removeEventListener("pointerdown", userGestureKick);
       window.removeEventListener("keydown", userGestureKick);
     }
-    window.addEventListener("pointerdown", userGestureKick);
+    window.addEventListener("pointerdown", userGestureKick, { passive:true });
     window.addEventListener("keydown", userGestureKick);
 
     updateAudioUI();
     tryAutoplay();
 
-    /* ===== Visitas (contador real desde backend) ===== */
+    /* =========================
+       Visitas (contador real)
+       ========================= */
     async function track(){
       try{
         const res = await fetch(ENDPOINT_TRACK, { method:"GET", cache:"no-store" });
@@ -503,7 +641,6 @@
     }
 
     track();
-    // opcional: refrescar cada 30s para “en vivo”
     setInterval(track, 30000);
   </script>
 </body>
